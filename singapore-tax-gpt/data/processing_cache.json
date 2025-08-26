@@ -1,0 +1,16 @@
+{
+  "data/iras_docs/Income Tax (Exemption of Foreign Income) Order 201.pdf": {
+    "hash": "7c6bb0d4bd5db5a960dc6085fadeb918dd889198f2f3094e46f7b50ec07f73d8",
+    "timestamp": "2025-08-23T10:57:07.886276",
+    "chunks": 6,
+    "document_type": "order",
+    "tax_category": "income"
+  },
+  "data/iras_docs/Income Tax Act 1947.pdf": {
+    "hash": "f351a859a49f9a3605e80728f4fc2ff9435c40797d91eabe760c6f2e07283719",
+    "timestamp": "2025-08-25T07:42:54.449713",
+    "chunks": 1720,
+    "document_type": "act",
+    "tax_category": "income"
+  }
+}

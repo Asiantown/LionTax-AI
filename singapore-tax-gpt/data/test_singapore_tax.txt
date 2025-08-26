@@ -1,0 +1,10 @@
+
+            Singapore Tax Information:
+            
+            GST Rate: The Goods and Services Tax (GST) rate in Singapore is 9% as of 1 January 2024.
+            
+            Corporate Tax: Singapore's corporate tax rate is 17% for all companies.
+            
+            Personal Income Tax: Singapore uses a progressive tax system for residents,
+            with rates ranging from 0% to 24% depending on income level.
+            

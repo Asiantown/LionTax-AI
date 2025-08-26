@@ -1,0 +1,26 @@
+{
+  "Income Tax (Exemption of Foreign Income) Order 201.pdf": {
+    "filename": "Income Tax (Exemption of Foreign Income) Order 201.pdf",
+    "file_hash": "7c6bb0d4bd5db5a960dc6085fadeb918dd889198f2f3094e46f7b50ec07f73d8",
+    "file_size": 33783,
+    "last_modified": "2025-08-22T19:37:16.255312",
+    "version_date": null,
+    "year_of_assessment": null,
+    "document_type": "act",
+    "changes_detected": [],
+    "supersedes": null,
+    "is_current": true
+  },
+  "Income Tax Act 1947.pdf": {
+    "filename": "Income Tax Act 1947.pdf",
+    "file_hash": "f351a859a49f9a3605e80728f4fc2ff9435c40797d91eabe760c6f2e07283719",
+    "file_size": 3158275,
+    "last_modified": "2025-08-22T19:55:57.029395",
+    "version_date": null,
+    "year_of_assessment": "1947",
+    "document_type": "act",
+    "changes_detected": [],
+    "supersedes": null,
+    "is_current": true
+  }
+}

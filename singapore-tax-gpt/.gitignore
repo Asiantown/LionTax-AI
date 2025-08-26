@@ -1,0 +1,37 @@
+# Environment files
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database
+*.sqlite3
+*.db
+data/chroma_db/
+
+# Large files
+*.bin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# UV
+.python-version
+uv.lock

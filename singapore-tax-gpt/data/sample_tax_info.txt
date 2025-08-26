@@ -1,0 +1,40 @@
+
+    SINGAPORE TAX QUICK REFERENCE (2024)
+    =====================================
+    
+    1. INCOME TAX RATES (RESIDENTS)
+    --------------------------------
+    First $20,000: 0%
+    Next $10,000: 2%
+    Next $10,000: 3.5%
+    Next $40,000: 7%
+    Next $40,000: 11.5%
+    Next $40,000: 15%
+    Next $40,000: 18%
+    Next $40,000: 19%
+    Next $40,000: 19.5%
+    Next $40,000: 20%
+    Next $180,000: 22%
+    Next $500,000: 23%
+    Above $1,000,000: 24%
+    
+    2. GST RATE
+    -----------
+    Current GST rate: 9% (from 1 Jan 2024)
+    
+    3. IMPORTANT DEADLINES
+    ----------------------
+    Paper Filing: 15 April
+    E-Filing: 18 April
+    
+    4. CORPORATE TAX
+    ----------------
+    Standard rate: 17%
+    
+    5. PROPERTY TAX (OWNER-OCCUPIED)
+    ----------------------------------
+    First $8,000: 0%
+    Next $47,000: 4%
+    Next $15,000: 6%
+    Above $70,000: Progressive rates up to 16%
+    
