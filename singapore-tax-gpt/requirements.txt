@@ -1,10 +1,23 @@
+# Core dependencies
 streamlit==1.29.0
+python-dotenv==1.0.0
+
+# OpenAI and LangChain
 openai==1.10.0
 langchain==0.1.0
 langchain-openai==0.0.5
 langchain-community==0.0.10
+
+# Vector database
 chromadb==0.4.22
+
+# PDF processing
 pypdf==3.17.4
 pdfplumber==0.10.3
-python-dotenv==1.0.0
+
+# Tokenization
 tiktoken==0.5.2
+
+# Additional for build
+setuptools>=65.0.0
+wheel>=0.37.0
