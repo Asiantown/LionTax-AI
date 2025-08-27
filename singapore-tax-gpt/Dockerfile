@@ -25,8 +25,11 @@ RUN pip install --upgrade pip && \
 # Copy application
 COPY . .
 
+# Make start script executable
+RUN chmod +x start.sh
+
 # Expose port
 EXPOSE 8501
 
-# Run streamlit
-CMD ["streamlit", "run", "app_main.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+# Run using the start script
+CMD ["bash", "start.sh"]
