@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 from qa_working import answer_question
 from src.singapore.tax_calculator import SingaporeTaxCalculator
