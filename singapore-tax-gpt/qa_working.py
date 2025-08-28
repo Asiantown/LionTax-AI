@@ -43,7 +43,7 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
         all_chunks.extend(chunks)
     
     print(f"  Creating database with {len(all_chunks)} chunks...")
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
     db = Chroma.from_documents(
         documents=all_chunks,
         embedding=embeddings,
@@ -51,7 +51,7 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
     )
 else:
     print("✅ Database found. Loading...")
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
     db = Chroma(
         persist_directory=db_path,
         embedding_function=embeddings
