@@ -7,19 +7,19 @@ echo "Starting Streamlit on port $PORT"
 mkdir -p ~/.streamlit
 
 # Create config file with proper settings
-echo "\
-[server]\n\
-port = $PORT\n\
-enableCORS = false\n\
-enableXsrfProtection = false\n\
-headless = true\n\
-address = '0.0.0.0'\n\
-\n\
-[browser]\n\
-gatherUsageStats = false\n\
-serverAddress = '0.0.0.0'\n\
-serverPort = $PORT\n\
-" > ~/.streamlit/config.toml
+cat > ~/.streamlit/config.toml << EOF
+[server]
+port = $PORT
+enableCORS = false
+enableXsrfProtection = false
+headless = true
+address = "0.0.0.0"
+
+[browser]
+gatherUsageStats = false
+serverAddress = "0.0.0.0"
+serverPort = $PORT
+EOF
 
 # Start Streamlit
 python -m streamlit run app_main.py
