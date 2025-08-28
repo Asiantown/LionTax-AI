@@ -3,12 +3,19 @@
 
 import os
 import sys
+import warnings
 from dotenv import load_dotenv
+
+# Suppress warnings before imports
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+warnings.filterwarnings('ignore', message='.*Blowfish.*')
+warnings.filterwarnings('ignore', message='.*ARC4.*')
 
 # Load environment
 load_dotenv()
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+os.environ['CHROMA_TELEMETRY'] = 'false'
 
 print("🇸🇬 Singapore Tax Q&A System")
 print("="*50)

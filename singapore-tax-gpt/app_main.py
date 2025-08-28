@@ -2,11 +2,21 @@
 
 import streamlit as st
 import os
+import warnings
 from dotenv import load_dotenv
 
+# Suppress warnings before any imports that might trigger them
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+warnings.filterwarnings('ignore', message='.*Blowfish.*')
+warnings.filterwarnings('ignore', message='.*ARC4.*')
+
 load_dotenv()
+
+# Suppress telemetry and parallel processing warnings
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+os.environ['CHROMA_TELEMETRY'] = 'false'
+os.environ['STREAMLIT_BROWSER_GATHER_USAGE_STATS'] = 'false'
 
 from qa_working import answer_question
 from src.singapore.tax_calculator import SingaporeTaxCalculator
