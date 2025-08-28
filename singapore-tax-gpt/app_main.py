@@ -409,11 +409,12 @@ st.subheader("Ask Your Tax Question")
 
 # Question input with professional styling
 question = st.text_area(
-    "",
+    "Your Question",
     placeholder="Ask about Singapore taxes, regulations, calculations, or compliance requirements...",
     height=100,
     key="main_question",
-    value=st.session_state.get('question', '')
+    value=st.session_state.get('question', ''),
+    label_visibility="hidden"
 )
 
 # Action buttons
