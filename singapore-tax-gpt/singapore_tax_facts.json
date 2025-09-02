@@ -1,0 +1,214 @@
+{
+  "income_tax": {
+    "resident_rates": [
+      {
+        "bracket": "First $20,000",
+        "rate": 0,
+        "tax": 0
+      },
+      {
+        "bracket": "Next $10,000",
+        "rate": 2,
+        "tax": 200
+      },
+      {
+        "bracket": "Next $10,000",
+        "rate": 3.5,
+        "tax": 350
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 7,
+        "tax": 2800
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 11.5,
+        "tax": 4600
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 15,
+        "tax": 6000
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 18,
+        "tax": 7200
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 19,
+        "tax": 7600
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 19.5,
+        "tax": 7800
+      },
+      {
+        "bracket": "Next $40,000",
+        "rate": 20,
+        "tax": 8000
+      },
+      {
+        "bracket": "Above $320,000",
+        "rate": 22,
+        "tax": null
+      }
+    ],
+    "non_resident_rate": 22,
+    "reliefs": {
+      "personal_relief": 1000,
+      "earned_income_relief": {
+        "max": 1000,
+        "calculation": "Lower of $1,000 or 1% of earned income"
+      },
+      "spouse_relief": 2000,
+      "qualifying_child_relief": 4000,
+      "handicapped_child_relief": 7500,
+      "working_mother_child_relief": {
+        "percentage": 15,
+        "note": "15% of earned income per child"
+      },
+      "parent_relief": 9000,
+      "handicapped_parent_relief": 14000,
+      "grandparent_caregiver_relief": 3000,
+      "handicapped_brother_sister_relief": 5500,
+      "cpf_cash_top_up_relief": 8000,
+      "cpf_relief": "Automatic for mandatory contributions",
+      "course_fees_relief": 5500,
+      "foreign_maid_levy_relief": {
+        "amount": "2x foreign maid levy paid"
+      },
+      "life_insurance_relief": 5000,
+      "supplementary_retirement_scheme": 15300,
+      "nsman_relief": {
+        "self": 3000,
+        "wife": 750,
+        "parent": 750
+      }
+    },
+    "deductions": {},
+    "rebates": {}
+  },
+  "gst": {
+    "standard_rate": 9,
+    "zero_rated_supplies": [],
+    "exempt_supplies": [],
+    "registration_threshold": 1000000
+  },
+  "stamp_duty": {
+    "bsd_rates": [
+      {
+        "price_range": "First $180,000",
+        "rate": 1
+      },
+      {
+        "price_range": "Next $180,000",
+        "rate": 2
+      },
+      {
+        "price_range": "Next $640,000",
+        "rate": 3
+      },
+      {
+        "price_range": "Next $500,000",
+        "rate": 4
+      },
+      {
+        "price_range": "Next $1,500,000",
+        "rate": 5
+      },
+      {
+        "price_range": "Above $3,000,000",
+        "rate": 6
+      }
+    ],
+    "absd_rates": {
+      "singapore_citizen_first": 0,
+      "singapore_citizen_second": 20,
+      "singapore_citizen_third_plus": 30,
+      "permanent_resident_first": 5,
+      "permanent_resident_second": 30,
+      "permanent_resident_third_plus": 35,
+      "foreigner_any": 60,
+      "entity": 65
+    },
+    "remission_rules": []
+  },
+  "property_tax": {
+    "residential_rates": [],
+    "non_residential_rates": [],
+    "owner_occupied_rates": [
+      {
+        "av_range": "First $8,000",
+        "rate": 0
+      },
+      {
+        "av_range": "Next $47,000",
+        "rate": 4
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 6
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 8
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 10
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 12
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 14
+      },
+      {
+        "av_range": "Above $130,000",
+        "rate": 16
+      }
+    ],
+    "non_owner_occupied_rates": [
+      {
+        "av_range": "First $30,000",
+        "rate": 10
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 12
+      },
+      {
+        "av_range": "Next $15,000",
+        "rate": 14
+      },
+      {
+        "av_range": "Above $60,000",
+        "rate": 16
+      }
+    ]
+  },
+  "cpf": {
+    "contribution_rates": [],
+    "wage_ceiling": null
+  },
+  "key_thresholds": {
+    "tax_resident_days": 183,
+    "start_paying_tax": 20000,
+    "highest_marginal_rate_at": 320000,
+    "cpf_ordinary_wage_ceiling": 6000,
+    "cpf_additional_wage_ceiling": 102000
+  },
+  "filing_deadlines": {
+    "e_filing": "18 April",
+    "paper_filing": "15 April",
+    "corporate": "30 November",
+    "gst_quarterly": "End of month following quarter end"
+  },
+  "penalties": {}
+}

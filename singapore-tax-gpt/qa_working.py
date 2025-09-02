@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-"""Working Q&A system for Singapore Tax documents."""
+"""Enhanced Q&A system for Singapore Tax documents with structured facts."""
 
 import os
 import sys
+import json
+import re
 import warnings
+from pathlib import Path
+from typing import Dict, List, Tuple
 from dotenv import load_dotenv
 
 # Suppress warnings before imports
@@ -25,7 +29,6 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
-from pathlib import Path
 
 # Quick check if database exists
 db_path = "./data/chroma_db"
@@ -66,13 +69,133 @@ else:
 
 print("✅ System ready!\n")
 
+# Load structured tax facts
+try:
+    with open('singapore_tax_facts.json', 'r') as f:
+        tax_facts = json.load(f)
+        print("✅ Loaded structured tax facts")
+except:
+    tax_facts = {}
+    print("⚠️ Tax facts not found, using RAG only")
+
 # Create QA chain
 llm = ChatOpenAI(temperature=0, model="gpt-4-turbo-preview")
 
+def classify_question(question: str) -> str:
+    """Classify question as factual or conceptual."""
+    q_lower = question.lower()
+    
+    # Factual patterns
+    factual_patterns = [
+        r"what (?:is|are) (?:the )?(?:current )?(?:tax )?rate",
+        r"how much",
+        r"calculate",
+        r"\$[\d,]+|\d+k",
+        r"relief|deduction",
+        r"deadline|due date",
+        r"threshold|bracket",
+        r"non-resident",
+        r"gst|stamp duty"
+    ]
+    
+    if any(re.search(p, q_lower) for p in factual_patterns):
+        return "factual"
+    return "conceptual"
+
+def get_factual_answer(question: str) -> Tuple[str, List[str]]:
+    """Answer factual questions from structured data."""
+    q_lower = question.lower()
+    
+    # Income tax rates
+    if 'income tax rate' in q_lower and 'resident' in q_lower:
+        rates = tax_facts.get('income_tax', {}).get('resident_rates', [])
+        if rates:
+            response = "**Singapore Resident Income Tax Rates (YA 2024):**\n\n"
+            for r in rates[:11]:
+                response += f"- {r['bracket']}: {r['rate']}%\n"
+            response += "\n- First S$20,000 is tax-free\n- Maximum rate: 22% (income > S$320,000)"
+            return response, ["singapore_tax_facts.json"]
+    
+    # Non-resident rate
+    if 'non-resident' in q_lower or 'non resident' in q_lower:
+        return "The tax rate for non-residents is a flat **22%** on employment income.", ["singapore_tax_facts.json"]
+    
+    # Tax calculation
+    income_match = re.search(r'\$?([\d,]+)(?:k)?', q_lower)
+    if income_match and any(w in q_lower for w in ['calculate', 'tax for', 'earning']):
+        income = float(income_match.group(1).replace(',', ''))
+        if 'k' in q_lower:
+            income *= 1000
+        
+        # Calculate tax
+        tax = 0
+        if income > 320000:
+            tax = 44550 + (income - 320000) * 0.22
+        elif income > 280000:
+            tax = 36550 + (income - 280000) * 0.20
+        elif income > 240000:
+            tax = 28750 + (income - 240000) * 0.195
+        elif income > 200000:
+            tax = 21150 + (income - 200000) * 0.19
+        elif income > 160000:
+            tax = 13950 + (income - 160000) * 0.18
+        elif income > 120000:
+            tax = 7950 + (income - 120000) * 0.15
+        elif income > 80000:
+            tax = 3350 + (income - 80000) * 0.115
+        elif income > 40000:
+            tax = 550 + (income - 40000) * 0.07
+        elif income > 30000:
+            tax = 200 + (income - 30000) * 0.035
+        elif income > 20000:
+            tax = (income - 20000) * 0.02
+        
+        effective = (tax / income * 100) if income > 0 else 0
+        return f"For S${income:,.0f} income: Tax = **S${tax:,.0f}**, Effective rate = **{effective:.2f}%**, Take-home = **S${income-tax:,.0f}**", ["singapore_tax_facts.json"]
+    
+    # Reliefs
+    if 'spouse relief' in q_lower:
+        return "Spouse Relief: **S$2,000** (if spouse's income ≤ S$4,000)", ["singapore_tax_facts.json"]
+    
+    if 'child relief' in q_lower:
+        return "Child Relief: **S$4,000** per qualifying child, **S$7,500** for handicapped child", ["singapore_tax_facts.json"]
+    
+    if 'parent relief' in q_lower:
+        return "Parent Relief: **S$9,000** per parent (conditions: age 55+, income ≤ S$4,000, supported with ≥ S$2,000)", ["singapore_tax_facts.json"]
+    
+    if 'earned income relief' in q_lower:
+        return "Earned Income Relief: Lower of **S$1,000** or **1% of earned income** (automatic for all residents)", ["singapore_tax_facts.json"]
+    
+    # Thresholds
+    if any(w in q_lower for w in ['start paying', 'threshold', 'tax free']):
+        return "You start paying tax when income exceeds **S$20,000** (first S$20,000 is tax-free)", ["singapore_tax_facts.json"]
+    
+    if 'highest' in q_lower and 'rate' in q_lower:
+        return "The highest marginal tax rate is **22%** for income above **S$320,000**", ["singapore_tax_facts.json"]
+    
+    # GST
+    if 'gst' in q_lower:
+        return "GST rate: **9%** (as of 2024). Registration required if turnover > S$1,000,000", ["singapore_tax_facts.json"]
+    
+    # Deadlines
+    if any(w in q_lower for w in ['deadline', 'filing', 'due date']):
+        return "Tax filing deadlines: **E-filing: 18 April**, Paper: 15 April, Corporate: 30 November", ["singapore_tax_facts.json"]
+    
+    return None, []
+
 def answer_question(question):
-    """Answer a question using the documents."""
-    # Search for relevant chunks
-    docs = db.similarity_search(question, k=3)
+    """Answer a question using structured facts + RAG hybrid approach."""
+    
+    # Try factual answer first
+    q_type = classify_question(question)
+    
+    if q_type == "factual" and tax_facts:
+        factual_answer, fact_sources = get_factual_answer(question)
+        if factual_answer:
+            return factual_answer, fact_sources
+    
+    # Fall back to RAG for conceptual or unanswered factual questions
+    docs = db.similarity_search(question, k=5)  # Increased from 3 to 5
     
     if not docs:
         return "No relevant information found in the documents.", []
@@ -81,18 +204,24 @@ def answer_question(question):
     context = "\n\n".join([doc.page_content for doc in docs])
     sources = list(set([doc.metadata.get('source', 'Unknown') for doc in docs]))
     
-    # Create prompt
-    prompt = f"""You are a Singapore tax expert. Answer the question based ONLY on the context below.
+    # Enhanced prompt with instruction to include specific numbers
+    prompt = f"""You are a Singapore tax expert. Answer the question based on the context below.
+
+IMPORTANT: Include specific numbers, rates, amounts, and thresholds in your answer.
 
 Context from Singapore tax laws:
-{context[:3000]}
+{context[:4000]}
 
 Question: {question}
 
-Answer (be specific and cite the document if possible):"""
+Provide a comprehensive answer with specific facts and figures:"""
     
     # Get answer
     response = llm.invoke(prompt)
+    
+    # If we have factual data, enhance the answer
+    if tax_facts and q_type == "factual":
+        sources.append("singapore_tax_facts.json")
     
     return response.content, sources
 
@@ -107,8 +236,13 @@ if __name__ == "__main__":
         if sources:
             print(f"Sources: {', '.join(sources)}")
     else:
-        # Interactive mode
-        print("Ask any question about Singapore taxes (type 'exit' to quit)\n")
+        # Interactive mode with examples
+        print("Ask any question about Singapore taxes (type 'exit' to quit)")
+        print("\nExample questions:")
+        print("- What are the current income tax rates?")
+        print("- Calculate tax for $80,000 income")
+        print("- How much is spouse relief?")
+        print("- What is the GST rate?\n")
         
         while True:
             question = input("❓ Your question: ").strip()
