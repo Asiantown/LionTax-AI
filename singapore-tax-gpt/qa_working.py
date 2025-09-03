@@ -30,9 +30,10 @@ import logging
 logging.getLogger('chromadb.telemetry').setLevel(logging.ERROR)
 logging.getLogger('chromadb.telemetry.posthog').setLevel(logging.ERROR)
 
-print("🇸🇬 Singapore Tax Q&A System")
+print("🇸🇬 Singapore Tax Q&A System v2.2")
 print("="*50)
 print("Loading 9 tax acts...")
+print("Version: Fixed formatting (2024-03-09 15:45)")
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -125,18 +126,23 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
        ('income tax rate' in q_lower) or \
        ('tax rate' in q_lower and 'resident' in q_lower) or \
        ('current' in q_lower and 'tax' in q_lower):
-        response = "Current Singapore Resident Tax Rates (2024):\n\n"
-        response += "$0 - $20,000: 0%\n"
-        response += "$20,001 - $30,000: 2%\n"
-        response += "$30,001 - $40,000: 3.5%\n"
-        response += "$40,001 - $80,000: 7%\n"
-        response += "$80,001 - $120,000: 11.5%\n"
-        response += "$120,001 - $160,000: 15%\n"
-        response += "$160,001 - $200,000: 18%\n"
-        response += "$200,001 - $240,000: 19%\n"
-        response += "$240,001 - $280,000: 19.5%\n"
-        response += "$280,001 - $320,000: 20%\n"
-        response += "$320,001 and above: 22%"
+        # Build response with proper line breaks
+        lines = [
+            "Current Singapore Resident Tax Rates (2024):",
+            "",
+            "$0 - $20,000: 0%",
+            "$20,001 - $30,000: 2%",
+            "$30,001 - $40,000: 3.5%",
+            "$40,001 - $80,000: 7%",
+            "$80,001 - $120,000: 11.5%",
+            "$120,001 - $160,000: 15%",
+            "$160,001 - $200,000: 18%",
+            "$200,001 - $240,000: 19%",
+            "$240,001 - $280,000: 19.5%",
+            "$280,001 - $320,000: 20%",
+            "$320,001 and above: 22%"
+        ]
+        response = "\n".join(lines)
         return response, ["singapore_tax_facts.json"]
     
     # Non-resident rate
@@ -179,15 +185,20 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         
         # Format response with clean text (no markdown)
         if income == 80000:
-            response = "For the $80,000 example:\n\n"
-            response += "Calculation: First $20k tax-free, then apply progressive rates\n"
-            response += "- First $20,000 at 0% = $0\n"
-            response += "- Next $10,000 at 2% = $200\n"  
-            response += "- Next $10,000 at 3.5% = $350\n"
-            response += "- Next $40,000 at 7% = $2,800\n"
-            response += f"\nTotal Tax = $3,350\n"
-            response += f"Effective Rate = {effective:.2f}%\n"
-            response += f"Take-home = ${income-tax:,.0f}"
+            lines = [
+                "For the $80,000 example:",
+                "",
+                "Calculation: First $20k tax-free, then apply progressive rates",
+                "- First $20,000 at 0% = $0",
+                "- Next $10,000 at 2% = $200",
+                "- Next $10,000 at 3.5% = $350",
+                "- Next $40,000 at 7% = $2,800",
+                "",
+                "Total Tax = $3,350",
+                f"Effective Rate = {effective:.2f}%",
+                f"Take-home = ${income-tax:,.0f}"
+            ]
+            response = "\n".join(lines)
         else:
             response = f"Tax Calculation for ${income:,.0f}:\n\n"
             response += f"Tax Amount = ${tax:,.0f}\n"
