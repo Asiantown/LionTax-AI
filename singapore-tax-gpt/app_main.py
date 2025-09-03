@@ -441,9 +441,11 @@ if submit_btn and question:
             
             # Display response in professional format
             st.markdown("### Professional Tax Guidance")
+            # Convert newlines to HTML breaks for proper formatting
+            formatted_answer = answer.replace('\n', '<br>')
             st.markdown(f"""
             <div class="response-container">
-                {answer}
+                {formatted_answer}
             </div>
             """, unsafe_allow_html=True)
             
