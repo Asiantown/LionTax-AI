@@ -121,11 +121,15 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     """Answer factual questions from structured data."""
     q_lower = question.lower()
     
-    # Income tax rates - match exact question and provide clean format
+    # CHECK NON-RESIDENT FIRST - before general tax rate check
+    if 'non-resident' in q_lower or 'non resident' in q_lower or 'non residents' in q_lower:
+        return "The tax rate for non-residents is a flat 22% on employment income.", ["singapore_tax_facts.json"]
+    
+    # Income tax rates for residents - check after non-resident
     if ('personal income tax' in q_lower and 'singapore resident' in q_lower) or \
-       ('income tax rate' in q_lower) or \
-       ('tax rate' in q_lower and 'resident' in q_lower) or \
-       ('current' in q_lower and 'tax' in q_lower):
+       ('income tax rate' in q_lower and 'non' not in q_lower) or \
+       ('tax rate' in q_lower and 'resident' in q_lower and 'non' not in q_lower) or \
+       ('current' in q_lower and 'tax' in q_lower and 'non' not in q_lower):
         # Build response with proper line breaks
         lines = [
             "Current Singapore Resident Tax Rates (2024):",
@@ -144,10 +148,6 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         ]
         response = "\n".join(lines)
         return response, ["singapore_tax_facts.json"]
-    
-    # Non-resident rate
-    if 'non-resident' in q_lower or 'non resident' in q_lower:
-        return "The tax rate for non-residents is a flat 22% on employment income.", ["singapore_tax_facts.json"]
     
     # Tax calculation
     income_match = re.search(r'\$?([\d,]+)(?:k)?', q_lower)
