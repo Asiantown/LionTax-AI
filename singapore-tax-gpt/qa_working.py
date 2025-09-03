@@ -123,7 +123,15 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     
     # CHECK NON-RESIDENT FIRST - before general tax rate check
     if 'non-resident' in q_lower or 'non resident' in q_lower or 'non residents' in q_lower:
-        return "The tax rate for non-residents is a flat 22% on employment income.", ["singapore_tax_facts.json"]
+        lines = [
+            "Tax rates for non-residents:",
+            "",
+            "Employment income: 15% flat rate (or progressive resident rates if higher)",
+            "Director's fees and other income: 24% flat rate",
+            "",
+            "Note: Non-residents are not entitled to personal reliefs"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # Income tax rates for residents - check after non-resident
     if ('personal income tax' in q_lower and 'singapore resident' in q_lower) or \

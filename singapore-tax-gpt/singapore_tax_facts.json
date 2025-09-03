@@ -57,7 +57,11 @@
         "tax": null
       }
     ],
-    "non_resident_rate": 22,
+    "non_resident_rates": {
+      "employment_income": 15,
+      "other_income": 24,
+      "note": "Employment income taxed at 15% or progressive rates (whichever is higher). Director's fees and other income taxed at 24%"
+    },
     "reliefs": {
       "personal_relief": 1000,
       "earned_income_relief": {
