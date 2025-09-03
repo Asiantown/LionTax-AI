@@ -149,11 +149,14 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         response = "\n".join(lines)
         return response, ["singapore_tax_facts.json"]
     
-    # Tax calculation
+    # Tax calculation - expanded patterns to catch takehome questions
     income_match = re.search(r'\$?([\d,]+)(?:k)?', q_lower)
-    if income_match and any(w in q_lower for w in ['calculate', 'tax for', 'earning']):
-        income = float(income_match.group(1).replace(',', ''))
-        if 'k' in q_lower:
+    if income_match and any(w in q_lower for w in ['calculate', 'tax for', 'earning', 'takehome', 'take-home', 'take home', 'income is', 'salary']):
+        income_str = income_match.group(1).replace(',', '')
+        income = float(income_str)
+        
+        # Check if 'k' suffix is used (e.g., "80k" means 80,000)
+        if 'k' in income_match.group(0):
             income *= 1000
         
         # Calculate tax with exact brackets
@@ -183,27 +186,49 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         
         effective = (tax / income * 100) if income > 0 else 0
         
-        # Format response with clean text (no markdown)
-        if income == 80000:
-            lines = [
-                "For the $80,000 example:",
-                "",
-                "Calculation: First $20k tax-free, then apply progressive rates",
-                "- First $20,000 at 0% = $0",
-                "- Next $10,000 at 2% = $200",
-                "- Next $10,000 at 3.5% = $350",
-                "- Next $40,000 at 7% = $2,800",
-                "",
-                "Total Tax = $3,350",
-                f"Effective Rate = {effective:.2f}%",
-                f"Take-home = ${income-tax:,.0f}"
-            ]
-            response = "\n".join(lines)
-        else:
-            response = f"Tax Calculation for ${income:,.0f}:\n\n"
-            response += f"Tax Amount = ${tax:,.0f}\n"
-            response += f"Effective Rate = {effective:.2f}%\n"
-            response += f"Take-home = ${income-tax:,.0f}"
+        # Format response consistently for ALL amounts
+        lines = [f"Tax Calculation for ${income:,.0f}:", ""]
+        
+        # Build progressive calculation breakdown
+        if income > 0:
+            lines.append("- First $20,000 at 0% = $0")
+        if income > 20000:
+            amt = min(income - 20000, 10000)
+            lines.append(f"- Next ${amt:,.0f} at 2% = ${amt * 0.02:,.0f}")
+        if income > 30000:
+            amt = min(income - 30000, 10000)
+            lines.append(f"- Next ${amt:,.0f} at 3.5% = ${amt * 0.035:,.0f}")
+        if income > 40000:
+            amt = min(income - 40000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 7% = ${amt * 0.07:,.0f}")
+        if income > 80000:
+            amt = min(income - 80000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 11.5% = ${amt * 0.115:,.0f}")
+        if income > 120000:
+            amt = min(income - 120000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 15% = ${amt * 0.15:,.0f}")
+        if income > 160000:
+            amt = min(income - 160000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 18% = ${amt * 0.18:,.0f}")
+        if income > 200000:
+            amt = min(income - 200000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 19% = ${amt * 0.19:,.0f}")
+        if income > 240000:
+            amt = min(income - 240000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 19.5% = ${amt * 0.195:,.0f}")
+        if income > 280000:
+            amt = min(income - 280000, 40000)
+            lines.append(f"- Next ${amt:,.0f} at 20% = ${amt * 0.20:,.0f}")
+        if income > 320000:
+            amt = income - 320000
+            lines.append(f"- Above $320,000: ${amt:,.0f} at 22% = ${amt * 0.22:,.0f}")
+        
+        lines.append("")
+        lines.append(f"Total Tax = ${tax:,.0f}")
+        lines.append(f"Effective Rate = {effective:.2f}%")
+        lines.append(f"Take-home = ${income-tax:,.0f}")
+        
+        response = "\n".join(lines)
         
         return response, ["singapore_tax_facts.json"]
     
@@ -259,26 +284,34 @@ def answer_question(question):
     context = "\n\n".join([doc.page_content for doc in docs])
     sources = list(set([doc.metadata.get('source', 'Unknown') for doc in docs]))
     
-    # Enhanced prompt with instruction to include specific numbers
-    prompt = f"""You are a Singapore tax expert. Answer the question based on the context below.
+    # Concise prompt for direct answers
+    prompt = f"""You are a Singapore tax expert. Answer concisely and directly.
 
-IMPORTANT: Include specific numbers, rates, amounts, and thresholds in your answer.
-
-Context from Singapore tax laws:
-{context[:4000]}
+Context: {context[:4000]}
 
 Question: {question}
 
-Provide a comprehensive answer with specific facts and figures:"""
+Provide a SHORT, DIRECT answer with specific numbers. NO explanations or steps unless asked. Format as plain text, no markdown:"""
     
     # Get answer
     response = llm.invoke(prompt)
+    
+    # Clean up markdown from response
+    answer = response.content
+    # Remove markdown bold
+    answer = answer.replace('**', '')
+    answer = answer.replace('__', '')
+    # Remove markdown headers
+    answer = re.sub(r'^#{1,6}\s+', '', answer, flags=re.MULTILINE)
+    answer = answer.replace('###', '').replace('##', '').replace('#', '')
+    # Remove markdown italics
+    answer = answer.replace('*', '').replace('_', '')
     
     # If we have factual data, enhance the answer
     if tax_facts and q_type == "factual":
         sources.append("singapore_tax_facts.json")
     
-    return response.content, sources
+    return answer, sources
 
 # Interactive mode
 if __name__ == "__main__":
