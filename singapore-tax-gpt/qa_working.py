@@ -30,6 +30,15 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_community.vectorstores import Chroma
 
+# Import multi-agent system
+try:
+    from multi_agent_simplified import MultiAgentOrchestrator
+    MULTI_AGENT_AVAILABLE = True
+    print("✅ Multi-agent system loaded")
+except ImportError:
+    MULTI_AGENT_AVAILABLE = False
+    print("⚠️ Multi-agent system not available")
+
 # Quick check if database exists
 db_path = "./data/chroma_db"
 if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
@@ -186,6 +195,28 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
 def answer_question(question):
     """Answer a question using structured facts + RAG hybrid approach."""
     
+    # Use multi-agent system if available
+    if MULTI_AGENT_AVAILABLE:
+        try:
+            orchestrator = MultiAgentOrchestrator()
+            answer, metadata = orchestrator.answer_question(question)
+            
+            # Extract sources
+            sources = []
+            if 'FactAgent' in metadata.get('agents_used', []):
+                sources.append('singapore_tax_facts.json')
+            if 'SearchAgent' in metadata.get('agents_used', []):
+                sources.append('Income Tax Act 1947.pdf')
+            
+            # Add performance info for fast responses
+            if metadata.get('total_time', 0) < 1:
+                answer += f"\n\n*[Multi-agent response in {metadata['total_time']:.2f}s]*"
+            
+            return answer, sources
+        except Exception as e:
+            print(f"Multi-agent failed, falling back: {e}")
+    
+    # Fallback to original approach
     # Try factual answer first
     q_type = classify_question(question)
     
