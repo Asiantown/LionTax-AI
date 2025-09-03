@@ -394,6 +394,7 @@ with st.sidebar:
 # Main interface
 st.title("Singapore Tax GPT")
 st.markdown("*Professional AI tax assistant powered by official IRAS regulations*")
+st.warning("⚠️ **Tax rates current as of December 2024.** Tax regulations change annually. Please verify critical information with [IRAS](https://www.iras.gov.sg) directly.")
 
 # Quick action pills
 st.markdown("**Popular Topics:**")

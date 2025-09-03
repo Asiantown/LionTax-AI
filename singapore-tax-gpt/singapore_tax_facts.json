@@ -1,4 +1,11 @@
 {
+  "metadata": {
+    "last_updated": "2024-12-19",
+    "tax_year": "2024",
+    "year_of_assessment": "2025",
+    "data_source": "IRAS official website",
+    "disclaimer": "Tax rates and regulations are subject to change. Please verify critical information with IRAS directly."
+  },
   "income_tax": {
     "resident_rates": [
       {

@@ -277,6 +277,11 @@ def answer_question(question):
     if tax_facts:
         factual_answer, fact_sources = get_factual_answer(question)
         if factual_answer:
+            # Add currency warning for rate questions
+            if any(word in question.lower() for word in ['rate', 'tax', 'percent', '%']):
+                metadata = tax_facts.get('metadata', {})
+                last_updated = metadata.get('last_updated', 'Unknown')
+                factual_answer += f"\n\n[Data current as of {last_updated}]"
             return factual_answer, fact_sources
     
     # Only classify and check if we should skip RAG for non-factual
