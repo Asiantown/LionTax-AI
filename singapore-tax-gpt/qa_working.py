@@ -17,9 +17,18 @@ warnings.filterwarnings('ignore', message='.*ARC4.*')
 
 # Load environment
 load_dotenv()
+
+# Completely disable all telemetry and warnings
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 os.environ['CHROMA_TELEMETRY'] = 'false'
+os.environ['CHROMA_CLIENT_TELEMETRY'] = 'false'
+os.environ['CHROMA_SERVER_TELEMETRY'] = 'false'
+
+# Suppress ChromaDB telemetry errors
+import logging
+logging.getLogger('chromadb.telemetry').setLevel(logging.ERROR)
+logging.getLogger('chromadb.telemetry.posthog').setLevel(logging.ERROR)
 
 print("🇸🇬 Singapore Tax Q&A System")
 print("="*50)

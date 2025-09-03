@@ -16,7 +16,14 @@ load_dotenv()
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 os.environ['CHROMA_TELEMETRY'] = 'false'
+os.environ['CHROMA_CLIENT_TELEMETRY'] = 'false'
+os.environ['CHROMA_SERVER_TELEMETRY'] = 'false'
 os.environ['STREAMLIT_BROWSER_GATHER_USAGE_STATS'] = 'false'
+
+# Suppress ChromaDB telemetry errors
+import logging
+logging.getLogger('chromadb.telemetry').setLevel(logging.ERROR)
+logging.getLogger('chromadb.telemetry.posthog').setLevel(logging.ERROR)
 
 from qa_working import answer_question
 from src.singapore.tax_calculator import SingaporeTaxCalculator
