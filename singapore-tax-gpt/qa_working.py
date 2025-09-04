@@ -251,6 +251,7 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         lines.append(f"Total Tax = ${tax:,.0f}")
         lines.append(f"Effective Rate = {effective:.2f}%")
         lines.append(f"Take-home = ${income-tax:,.0f}")
+        lines.append(f"Monthly Take-home = ${(income-tax)/12:,.0f}")
         
         response = "\n".join(lines)
         
@@ -321,22 +322,35 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     # GST
     if 'gst' in q_lower:
         lines = [
-            "GST (Goods and Services Tax) rate: 9%",
+            "GST (Goods and Services Tax) rate in Singapore: 9%",
+            "",
+            "Key Details:",
             "• Increased from 8% to 9% on 1 January 2024",
-            "• Applies to most goods and services in Singapore",
-            "• Registration required if annual turnover exceeds S$1 million",
-            "• Some items are zero-rated (exports) or exempt (financial services, residential property)"
+            "• Applies to most goods and services supplied in Singapore",
+            "• Businesses must register for GST if annual turnover exceeds S$1 million",
+            "• Zero-rated (0%): Exports and international services",
+            "• Exempt: Financial services, residential property sales/rental",
+            "• One of the lowest consumption tax rates globally"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # Corporate tax
     if 'corporate tax' in q_lower or 'company tax' in q_lower:
         lines = [
-            "Corporate income tax rate: 17% (flat rate)",
-            "• Applies to all companies, both local and foreign",
-            "• Singapore uses a one-tier system - dividends are tax-free to shareholders",
-            "• Partial tax exemption available: 75% exemption on first S$10,000, 50% on next S$190,000",
-            "• Start-ups enjoy additional tax exemptions in first 3 years"
+            "Singapore corporate income tax rate: 17% (flat rate)",
+            "",
+            "Key Features:",
+            "• Applies to both local and foreign companies on Singapore-sourced income",
+            "• Territorial tax system - foreign income generally not taxed unless remitted",
+            "• One-tier system - dividends are tax-free in shareholders' hands (no withholding tax)",
+            "• One of the most competitive rates in Asia",
+            "",
+            "Tax Exemptions:",
+            "• Partial: 75% exemption on first S$10,000, 50% on next S$190,000",
+            "• Start-ups: Additional 75% on first S$100,000, 50% on next S$100,000 (first 3 years)",
+            "• Effective rate is lower due to exemptions",
+            "",
+            "Example: Company with S$200,000 profit pays ~S$29,325 tax (effective rate ~14.7%)"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
