@@ -295,11 +295,24 @@ def split_multiple_questions(text):
     import re
     
     # Check if text has multiple questions
-    # Look for: multiple ?, numbered lists, or lines ending with ?
     questions = []
     
-    # Method 1: Split by question marks (if multiple exist)
-    if text.count('?') > 1:
+    # First check for bullet points or numbered lists
+    has_bullets = bool(re.search(r'^\s*[-•]\s+', text, re.MULTILINE))
+    has_numbers = bool(re.search(r'^\s*\d+[\.\)]\s+', text, re.MULTILINE))
+    
+    if has_bullets or has_numbers:
+        # Split by lines and clean each one
+        lines = text.strip().split('\n')
+        for line in lines:
+            # Remove leading bullets, numbers, whitespace
+            clean_line = re.sub(r'^\s*[-•]\s*', '', line).strip()
+            clean_line = re.sub(r'^\s*\d+[\.\)]\s*', '', clean_line).strip()
+            if clean_line and len(clean_line) > 10:
+                questions.append(clean_line)
+    
+    # Otherwise, check for question marks
+    elif text.count('?') > 1:
         # Split by ? but keep the question mark
         parts = re.split(r'(\?)', text)
         current_q = ""
@@ -314,13 +327,12 @@ def split_multiple_questions(text):
         if current_q.strip() and len(current_q.strip()) > 5:
             questions.append(current_q.strip())
     
-    # Method 2: Split by newlines (each non-empty line could be a question)
+    # Otherwise, check if there are multiple lines
     elif '\n' in text:
         lines = text.strip().split('\n')
         for line in lines:
-            # Remove numbering like "1." or "1)" 
-            clean_line = re.sub(r'^\d+[\.\)]\s*', '', line).strip()
-            if clean_line and len(clean_line) > 10:  # Minimum length for a question
+            clean_line = line.strip()
+            if clean_line and len(clean_line) > 10:
                 questions.append(clean_line)
     
     # If we found multiple questions, return them
