@@ -258,35 +258,98 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     
     # Reliefs
     if 'spouse relief' in q_lower:
-        return "Spouse Relief: S$2,000 (if spouse's income ≤ S$4,000)", ["singapore_tax_facts.json"]
+        lines = [
+            "Spouse Relief: S$2,000",
+            "• Available if spouse's annual income ≤ S$4,000",
+            "• Spouse must be living with you or supported by you",
+            "• Only one claimant per spouse (cannot be shared)",
+            "• Additional Handicapped Spouse Relief of S$5,500 if applicable"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     if 'child relief' in q_lower:
-        return "Child Relief: S$4,000 per qualifying child, S$7,500 for handicapped child", ["singapore_tax_facts.json"]
+        lines = [
+            "Child Relief amounts:",
+            "• S$4,000 per qualifying child",
+            "• S$7,500 per handicapped child",
+            "• Child must be unmarried, under 16, or studying full-time",
+            "• Maximum combined relief with spouse is S$50,000 per child"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     if 'parent relief' in q_lower:
-        return "Parent Relief: S$9,000 per parent (conditions: age 55+, income ≤ S$4,000, supported with ≥ S$2,000)", ["singapore_tax_facts.json"]
+        lines = [
+            "Parent Relief: S$9,000 per parent",
+            "• Parent must be age 55+ with income ≤ S$4,000",
+            "• You must have supported parent with ≥ S$2,000 in the year",
+            "• S$14,000 if parent is handicapped",
+            "• Can be shared between siblings"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     if 'earned income relief' in q_lower:
-        return "Earned Income Relief: Lower of S$1,000 or 1% of earned income (automatic for all residents)", ["singapore_tax_facts.json"]
+        lines = [
+            "Earned Income Relief: Automatic tax relief",
+            "• Lower of S$1,000 or 1% of earned income",
+            "• Automatically granted to all tax residents",
+            "• No need to claim - IRAS applies it automatically",
+            "• Helps reduce taxable income for all working individuals"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # Thresholds
     if any(w in q_lower for w in ['start paying', 'threshold', 'tax free']):
-        return "You start paying tax when income exceeds S$20,000 (first S$20,000 is tax-free)", ["singapore_tax_facts.json"]
+        lines = [
+            "Tax-free threshold in Singapore: S$20,000",
+            "• You only start paying income tax when annual income exceeds S$20,000",
+            "• The first S$20,000 of income is always tax-free (0% rate)",
+            "• This applies to Singapore tax residents only",
+            "• Non-residents don't get this tax-free threshold"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
-    if 'highest' in q_lower and 'rate' in q_lower:
-        return "The highest marginal tax rate is 22% for income above S$320,000", ["singapore_tax_facts.json"]
+    if 'highest' in q_lower and ('rate' in q_lower or 'tax' in q_lower):
+        lines = [
+            "Highest personal income tax rate: 22%",
+            "• Applies to income above S$320,000 per year", 
+            "• Singapore uses a progressive tax system with rates from 0% to 22%",
+            "• First S$20,000 is tax-free for all residents",
+            "• Non-residents pay different rates (15% or progressive, whichever higher)"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # GST
     if 'gst' in q_lower:
-        return "GST rate: 9% (as of 2024). Registration required if turnover > S$1,000,000", ["singapore_tax_facts.json"]
+        lines = [
+            "GST (Goods and Services Tax) rate: 9%",
+            "• Increased from 8% to 9% on 1 January 2024",
+            "• Applies to most goods and services in Singapore",
+            "• Registration required if annual turnover exceeds S$1 million",
+            "• Some items are zero-rated (exports) or exempt (financial services, residential property)"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # Corporate tax
     if 'corporate tax' in q_lower or 'company tax' in q_lower:
-        return "Corporate tax rate: 17% (flat rate for all companies)", ["singapore_tax_facts.json"]
+        lines = [
+            "Corporate income tax rate: 17% (flat rate)",
+            "• Applies to all companies, both local and foreign",
+            "• Singapore uses a one-tier system - dividends are tax-free to shareholders",
+            "• Partial tax exemption available: 75% exemption on first S$10,000, 50% on next S$190,000",
+            "• Start-ups enjoy additional tax exemptions in first 3 years"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     # Deadlines
     if any(w in q_lower for w in ['deadline', 'filing', 'due date']):
-        return "Tax filing deadlines: E-filing: 18 April, Paper: 15 April, Corporate: 30 November", ["singapore_tax_facts.json"]
+        lines = [
+            "Tax filing deadlines in Singapore:",
+            "• Individual e-Filing: 18 April",
+            "• Individual paper filing: 15 April (but e-filing is encouraged)",
+            "• Corporate tax filing: 30 November",
+            "• Tax payment: Usually by installment through GIRO, or in full upon Notice of Assessment"
+        ]
+        return "\n".join(lines), ["singapore_tax_facts.json"]
     
     return None, []
 
