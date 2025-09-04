@@ -264,14 +264,58 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     if 'gst' in q_lower:
         return "GST rate: 9% (as of 2024). Registration required if turnover > S$1,000,000", ["singapore_tax_facts.json"]
     
+    # Corporate tax
+    if 'corporate tax' in q_lower or 'company tax' in q_lower:
+        return "Corporate tax rate: 17% (flat rate for all companies)", ["singapore_tax_facts.json"]
+    
     # Deadlines
     if any(w in q_lower for w in ['deadline', 'filing', 'due date']):
         return "Tax filing deadlines: E-filing: 18 April, Paper: 15 April, Corporate: 30 November", ["singapore_tax_facts.json"]
     
     return None, []
 
-def answer_question(question):
-    """Answer a question using structured facts + RAG hybrid approach."""
+def split_multiple_questions(text):
+    """Split text into multiple questions if it contains multiple questions."""
+    import re
+    
+    # Check if text has multiple questions
+    # Look for: multiple ?, numbered lists, or lines ending with ?
+    questions = []
+    
+    # Method 1: Split by question marks (if multiple exist)
+    if text.count('?') > 1:
+        # Split by ? but keep the question mark
+        parts = re.split(r'(\?)', text)
+        current_q = ""
+        for i, part in enumerate(parts):
+            if part == '?':
+                current_q += part
+                if current_q.strip():
+                    questions.append(current_q.strip())
+                current_q = ""
+            else:
+                current_q += part
+        if current_q.strip() and len(current_q.strip()) > 5:
+            questions.append(current_q.strip())
+    
+    # Method 2: Split by newlines (each non-empty line could be a question)
+    elif '\n' in text:
+        lines = text.strip().split('\n')
+        for line in lines:
+            # Remove numbering like "1." or "1)" 
+            clean_line = re.sub(r'^\d+[\.\)]\s*', '', line).strip()
+            if clean_line and len(clean_line) > 10:  # Minimum length for a question
+                questions.append(clean_line)
+    
+    # If we found multiple questions, return them
+    if len(questions) > 1:
+        return questions
+    
+    # Otherwise return original text as single question
+    return [text]
+
+def answer_single_question(question):
+    """Answer a single question using structured facts + RAG hybrid approach."""
     
     # ALWAYS try factual answer first for direct, accurate responses
     if tax_facts:
@@ -325,6 +369,43 @@ Provide a SHORT, DIRECT answer with specific numbers. NO explanations or steps u
         sources.append("singapore_tax_facts.json")
     
     return answer, sources
+
+def answer_question(question):
+    """Answer a question (or multiple questions) using structured facts + RAG hybrid approach."""
+    
+    # Check if this is multiple questions
+    questions = split_multiple_questions(question)
+    
+    if len(questions) > 1:
+        # Handle multiple questions
+        all_answers = []
+        all_sources = []
+        
+        for i, q in enumerate(questions, 1):
+            # Skip empty or too-short questions
+            if not q or len(q.strip()) < 5:
+                continue
+                
+            # Get answer for this question
+            answer, sources = answer_single_question(q.strip())
+            
+            # Format the Q&A pair
+            all_answers.append(f"Question {i}: {q.strip()}")
+            all_answers.append("-" * 50)
+            all_answers.append(answer)
+            all_answers.append("")  # Empty line between Q&As
+            
+            # Collect sources
+            all_sources.extend(sources)
+        
+        # Combine all answers
+        final_answer = "\n".join(all_answers).strip()
+        unique_sources = list(set(all_sources))
+        
+        return final_answer, unique_sources
+    else:
+        # Single question - use original logic
+        return answer_single_question(question)
 
 # Interactive mode
 if __name__ == "__main__":
