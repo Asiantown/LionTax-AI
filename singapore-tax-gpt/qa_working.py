@@ -124,12 +124,28 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     # CHECK NON-RESIDENT FIRST - before general tax rate check
     if 'non-resident' in q_lower or 'non resident' in q_lower or 'non residents' in q_lower:
         lines = [
-            "Tax rates for non-residents:",
+            "Tax rates for non-residents in Singapore:",
             "",
-            "Employment income: 15% flat rate (or progressive resident rates if higher)",
-            "Director's fees and other income: 24% flat rate",
+            "EMPLOYMENT INCOME:",
+            "• 15% flat rate OR progressive resident rates (whichever produces HIGHER tax)",
+            "• This means if resident rates would result in more than 15% tax, you pay the higher amount",
+            "• No personal reliefs or $20,000 tax-free threshold",
             "",
-            "Note: Non-residents are not entitled to personal reliefs"
+            "EXAMPLE CALCULATIONS:",
+            "• $30,000 income: 15% = $4,500 (vs resident tax of ~$200, so pay $4,500)",
+            "• $500,000 income: Progressive rates = ~$88,150 (vs 15% = $75,000, so pay $88,150)",
+            "",
+            "OTHER INCOME TYPES:",
+            "• Director's fees: 24% flat rate",
+            "• Business/professional income: 24% flat rate",
+            "• Rental income: 24% flat rate",
+            "• Interest: 15% withholding tax",
+            "• Royalties: 10% withholding tax",
+            "",
+            "KEY POINTS:",
+            "• No tax reliefs or deductions available",
+            "• Tax-free if working ≤60 days (except directors/entertainers)",
+            "• Rates updated in 2024 (was 22%, now 24% for non-employment income)"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
