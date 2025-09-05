@@ -93,6 +93,32 @@ except:
 # Create QA chain
 llm = ChatOpenAI(temperature=0, model="gpt-4-turbo-preview")
 
+def split_multiple_questions(text):
+    """Split text into individual questions."""
+    questions = []
+    
+    # First check for multiple lines
+    if '\n' in text:
+        lines = text.strip().split('\n')
+        for line in lines:
+            clean = line.strip()
+            if clean and len(clean) > 10:  # Skip empty or very short lines
+                questions.append(clean)
+    
+    # If no newlines, check for multiple question marks
+    if not questions and text.count('?') > 1:
+        parts = text.split('?')
+        for i, part in enumerate(parts[:-1]):  # Skip last empty part after final ?
+            clean = part.strip()
+            if clean:
+                questions.append(clean + '?')  # Add ? back
+    
+    # If still no multiple questions found, just return the original
+    if not questions:
+        questions = [text.strip()]
+    
+    return questions
+
 def classify_question(question: str) -> str:
     """Classify question as factual or conceptual."""
     q_lower = question.lower()
@@ -755,6 +781,8 @@ def detect_all_topics(text):
     
     # Define topic patterns to look for (order matters - more specific first)
     topic_patterns = [
+        ('tax residency', r'(\d+\.?\d*)\s*days?|tax\s+resident|residency|work.*singapore.*days|exactly\s+\d+\s+days'),
+        ('remote work tax', r'remote|work.*from.*(?:malaysia|overseas|abroad)|live.*malaysia|work.*singapore.*company.*but'),
         ('filing deadline', r'when\s+(?:do\s+i\s+)?file|filing?\s+deadline|deadline|when.*file.*tax'),
         ('child relief', r'child(?:ren)?\s+relief|relief.*child|how\s+much.*child'),
         ('spouse relief', r'spouse\s+relief|wife\s+relief|husband\s+relief'),
@@ -765,7 +793,7 @@ def detect_all_topics(text):
         ('highest rate', r'highest.*rate|maximum.*rate|top.*rate|marginal.*rate.*highest'),
         ('corporate tax', r'corporate\s+tax|company\s+tax|tell\s+me\s+about\s+corporate'),
         ('gst', r'(?:what[\'s]*|whats?)\s+(?:is\s+)?(?:the\s+)?gst|gst\s+rate|tell\s+me\s+about\s+gst|about\s+gst'),
-        ('tax calculation', r'calculate\s+tax|tax\s+for\s+\$?[\d,]+|how\s+much\s+tax|tax.*calculated.*earning'),
+        ('tax calculation', r'calculate\s+tax|tax\s+for\s+\$[\d,]+|how\s+much\s+tax.*\$|tax.*calculated.*earning|\$[\d,]+\s*(?:salary|income|earn)'),
         ('all taxes', r'all\s+(?:at\s+)?once|everything\s+about|all\s+tax'),
     ]
     
@@ -774,14 +802,13 @@ def detect_all_topics(text):
         if re.search(pattern, text_lower):
             topics_found.append(topic_name)
     
-    # Also check for specific amounts to calculate
-    amounts = re.findall(r'\$?([\d,]+(?:\.\d+)?)', text)
+    # Only check for specific amounts to calculate if they have $ or clear income context
+    # Don't treat raw numbers as income amounts
+    amounts = re.findall(r'\$([\d,]+(?:\.\d+)?)', text)  # Only match numbers with $
     for amount in amounts:
-        # Skip if it's just a comma or very short
         clean_amount = amount.replace(',', '')
-        if clean_amount and len(clean_amount) > 0 and clean_amount.isdigit():
-            if any(word in text_lower for word in ['tax', 'calculate', 'pay', 'earn']):
-                topics_found.append(f'calculate_{amount}')
+        if clean_amount and clean_amount.isdigit():
+            topics_found.append(f'calculate_{amount}')
     
     # Remove duplicates while preserving order
     seen = set()
@@ -794,63 +821,144 @@ def detect_all_topics(text):
     return unique_topics if unique_topics else ['general']
 
 def answer_single_question(question):
-    """Answer a single question using structured facts + RAG hybrid approach."""
+    """Answer a single question by ALWAYS searching documents first."""
     
-    # ALWAYS try factual answer first for direct, accurate responses
-    if tax_facts:
-        factual_answer, fact_sources = get_factual_answer(question)
-        if factual_answer:
-            # Add currency warning for rate questions
-            if any(word in question.lower() for word in ['rate', 'tax', 'percent', '%']):
-                metadata = tax_facts.get('metadata', {})
-                last_updated = metadata.get('last_updated', 'Unknown')
-                factual_answer += f"\n\n[Data current as of {last_updated}]"
-            return factual_answer, fact_sources
+    # ALWAYS search documents FIRST - user explicitly requested this!
+    print(f"🔍 Searching documents for: {question[:50]}...")  # Debug to show we're searching
     
-    # Only classify and check if we should skip RAG for non-factual
-    q_type = classify_question(question)
+    # Try direct search first
+    docs = db.similarity_search(question, k=8)  # Increased to get more context
     
-    # Fall back to RAG for conceptual or unanswered factual questions
-    docs = db.similarity_search(question, k=5)  # Increased from 3 to 5
-    
+    # If no good results, try alternative search terms
+    if not docs or len(docs) < 3:
+        q_lower = question.lower()
+        alternative_searches = []
+        
+        # Build alternative search queries based on keywords
+        if 'gst' in q_lower:
+            alternative_searches.append('goods services tax rate singapore 2024')
+        if 'non-resident' in q_lower or 'non resident' in q_lower:
+            alternative_searches.append('non-resident withholding tax employment income')
+        if 'corporate' in q_lower:
+            alternative_searches.append('corporate income tax rate company')
+        if any(term in q_lower for term in ['child', 'spouse', 'parent']):
+            alternative_searches.append('personal relief qualifying child parent spouse')
+        if 'rate' in q_lower and 'income' in q_lower:
+            alternative_searches.append('progressive tax rates income brackets')
+        if 'threshold' in q_lower:
+            alternative_searches.append('tax-free threshold first 20000')
+        if 'filing' in q_lower or 'deadline' in q_lower:
+            alternative_searches.append('tax filing deadline e-filing paper')
+            
+        # Try alternative searches
+        for alt_query in alternative_searches:
+            more_docs = db.similarity_search(alt_query, k=3)
+            if more_docs:
+                docs.extend(more_docs)
+                
     if not docs:
-        return "No relevant information found in the documents.", []
+        return "I searched the documents but couldn't find relevant information. Please try rephrasing your question or be more specific.", []
     
-    # Build context
-    context = "\n\n".join([doc.page_content for doc in docs])
+    # Build comprehensive context from ALL found documents
+    context = "\n\n".join([doc.page_content for doc in docs[:8]])  # Use up to 8 docs
     sources = list(set([doc.metadata.get('source', 'Unknown') for doc in docs]))
     
-    # Concise prompt for direct answers
-    prompt = f"""You are a Singapore tax expert. Answer concisely and directly.
-
-Context: {context[:4000]}
-
-Question: {question}
-
-Provide a SHORT, DIRECT answer with specific numbers. NO explanations or steps unless asked. Format as plain text, no markdown:"""
+    # Check if documents have specific information or just general text
+    has_specific_info = False
+    q_lower = question.lower()
     
-    # Get answer
+    # Check if we found relevant content
+    for doc in docs:
+        doc_text = doc.page_content.lower()
+        # Check for specific keywords that indicate relevant content
+        if ('rate' in q_lower and any(x in doc_text for x in ['percent', '%', 'rate'])) or \
+           ('gst' in q_lower and 'goods' in doc_text and 'services' in doc_text) or \
+           ('non-resident' in q_lower and 'non-resident' in doc_text):
+            has_specific_info = True
+            break
+    
+    # If documents don't have specific info, check structured facts as supplement
+    supplemental_info = ""
+    if not has_specific_info and tax_facts:
+        # Try to get supplemental info from structured facts
+        fact_answer, _ = get_factual_answer(question)
+        if fact_answer:
+            supplemental_info = f"\n\nSupplemental Information (from tax facts database):\n{fact_answer}"
+    
+    # Enhanced prompt that uses documents but can add supplemental facts
+    prompt = f"""You are a Singapore tax expert analyzing official tax documents.
+
+Document Excerpts Searched:
+{context[:5000]}
+
+User Question: {question}{supplemental_info}
+
+INSTRUCTIONS:
+1. Provide a direct, clear answer to the question
+2. Use information from BOTH the document excerpts AND supplemental information (if provided)
+3. Start with the main answer (rates, amounts, rules) immediately
+4. Follow with 3-5 bullet points with additional details
+5. Be concise but comprehensive
+6. Do NOT use markdown formatting (no **, no ##)
+7. If documents lack specifics but supplemental info has it, use the supplemental info
+8. Don't mention "documents don't specify" - just provide the best available answer
+
+Answer:"""
+    
+    # Get answer from LLM
     response = llm.invoke(prompt)
     
-    # Clean up markdown from response
+    # Clean up any markdown
     answer = response.content
-    # Remove markdown bold
-    answer = answer.replace('**', '')
-    answer = answer.replace('__', '')
-    # Remove markdown headers
+    answer = answer.replace('**', '').replace('__', '')
     answer = re.sub(r'^#{1,6}\s+', '', answer, flags=re.MULTILINE)
     answer = answer.replace('###', '').replace('##', '').replace('#', '')
-    # Remove markdown italics
     answer = answer.replace('*', '').replace('_', '')
     
-    # If we have factual data, enhance the answer
-    if tax_facts and q_type == "factual":
+    # Add note about document search
+    if supplemental_info:
+        answer += f"\n\n[Searched {len(docs)} document sections; supplemented with tax facts database]"
         sources.append("singapore_tax_facts.json")
+    else:
+        answer += f"\n\n[Answer from {len(docs)} document sections]"
     
     return answer, sources
 
 def answer_question(question):
-    """Answer ALL topics found in the input, regardless of format."""
+    """Answer questions by searching documents - NO HARDCODING."""
+    
+    # Check if there are multiple questions
+    questions = split_multiple_questions(question)
+    
+    # If only one question, answer it directly
+    if len(questions) == 1:
+        return answer_single_question(questions[0])
+    
+    # Multiple questions - answer each by searching documents
+    all_answers = []
+    all_sources = []
+    
+    for i, q in enumerate(questions, 1):
+        print(f"\n🔍 Processing Question {i}: {q[:50]}...")
+        answer, sources = answer_single_question(q)
+        
+        # Format with question number
+        all_answers.append(f"Question {i}: {q}")
+        all_answers.append("-" * 60)
+        all_answers.append(answer)
+        all_answers.append("")  # Empty line between questions
+        
+        all_sources.extend(sources)
+    
+    final_answer = "\n".join(all_answers).strip()
+    unique_sources = list(set(all_sources))
+    
+    return final_answer, unique_sources
+
+def answer_question_old_hardcoded(question):
+    """OLD VERSION WITH HARDCODED ANSWERS - KEPT FOR REFERENCE ONLY."""
+    # This is the old hardcoded version that user doesn't want
+    # Keeping it renamed in case we need to reference it
     
     # Detect all topics in the input
     topics = detect_all_topics(question)
@@ -1021,6 +1129,114 @@ IMPORTANT NOTE:
 • Marginal rate = tax on your last dollar earned
 • Effective rate = total tax divided by total income (always lower)
 • Even at $1 million income, effective rate is under 20%"""
+            sources = ["singapore_tax_facts.json"]
+            
+        elif topic == 'tax residency':
+            answer = """Tax Residency Rules in Singapore
+
+To qualify as a tax resident in Singapore, you must be physically present or have worked in Singapore for 183 days or more in a calendar year. This is known as the 183-day rule and is strictly applied by IRAS (Inland Revenue Authority of Singapore).
+
+KEY RESIDENCY RULES:
+
+183 DAYS OR MORE:
+• You qualify as a tax resident for that year
+• Entitled to personal reliefs and tax-free threshold of $20,000
+• Taxed at progressive resident rates (0% to 22%)
+• Days counted include weekends and public holidays if in Singapore
+
+LESS THAN 183 DAYS (61-182 days):
+• You are a non-resident for tax purposes
+• Taxed at 15% flat rate or progressive rates (whichever is higher)
+• No personal reliefs or tax-free threshold
+• Employment income taxable
+
+60 DAYS OR LESS:
+• Generally tax exempt on employment income
+• EXCEPTIONS - still taxable if you are:
+  - Company director
+  - Public entertainer
+  - Professional (consultant, expert, etc.)
+
+COUNTING DAYS:
+• Physical presence is what counts (not employment days)
+• Includes weekends, holidays, and leave days spent in Singapore
+• Day of arrival and departure both count as days in Singapore
+• Business trips out of Singapore reduce your day count
+
+SPLIT YEAR SCENARIOS:
+Example: Work Jan-June (181 days) + December (5 days) = 186 days total
+• If all 186 days are in the SAME calendar year: Tax resident
+• If split across two years: Non-resident for both years
+• The 183 days must be in ONE calendar year
+
+SPECIAL CASES:
+• Exercising employment in Singapore for continuous period spanning 2 years
+• At least 183 days total across both years
+• May qualify for resident rates (subject to conditions)
+
+IMPORTANT NOTES:
+• Half days count as full days (182.5 days = 183 days)
+• Exactly 183 days = Tax resident
+• Remote work from overseas for Singapore company = Generally not taxable in Singapore
+• Tax residency is determined yearly - can change year to year"""
+            sources = ["singapore_tax_facts.json"]
+            
+        elif topic == 'remote work tax':
+            answer = """Remote Work Tax Implications for Singapore
+
+If you work remotely from outside Singapore (e.g., Malaysia) for a Singapore company, your tax treatment depends on where the work is performed, not where your employer is based.
+
+WORKING REMOTELY FROM OVERSEAS:
+
+If You Live and Work Outside Singapore:
+• Generally NOT taxable in Singapore
+• Income is foreign-sourced (work performed outside Singapore)
+• You pay tax in your country of residence (e.g., Malaysia)
+• No Singapore tax unless you physically work in Singapore
+
+KEY PRINCIPLE:
+• Singapore taxes based on WHERE work is performed
+• Not based on where employer is located
+• Remote work from Malaysia = Malaysian-sourced income
+
+SCENARIOS:
+
+1. Live in Malaysia, Work Remotely for Singapore Company:
+• Not taxable in Singapore
+• Taxable in Malaysia under Malaysian tax laws
+• No need to file Singapore tax return
+
+2. Split Time Between Countries:
+• Days worked in Singapore = Singapore-sourced (taxable)
+• Days worked in Malaysia = Malaysian-sourced (not taxable in Singapore)
+• Pro-rate income based on work days in each country
+
+3. Singapore Resident Working Temporarily Overseas:
+• Remain Singapore tax resident if overseas < 6 months
+• Still taxable in Singapore on worldwide income
+• May claim foreign tax credit for tax paid overseas
+
+TAX TREATY CONSIDERATIONS:
+• Singapore-Malaysia tax treaty prevents double taxation
+• Generally taxed only in country where work performed
+• May need tax residency certificate
+
+EMPLOYER OBLIGATIONS:
+• Singapore employer may still need to report
+• No CPF contributions for work done outside Singapore
+• Employer should not withhold Singapore tax
+
+DOCUMENTATION NEEDED:
+• Employment contract showing work location
+• Proof of days worked in each country
+• Tax residency certificate from home country
+• Immigration records of entry/exit
+
+IMPORTANT NOTES:
+• Short business trips to Singapore may create tax liability
+• Attending meetings in Singapore = working in Singapore
+• Directors fees always taxable in Singapore regardless of residence
+• Seek professional advice for complex arrangements"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'non-resident tax':
