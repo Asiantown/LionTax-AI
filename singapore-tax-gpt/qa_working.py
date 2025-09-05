@@ -208,24 +208,24 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         lines = [
             "**Singapore Personal Income Tax Rates for Residents (2024)**",
             "",
-            "Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for the Year of Assessment 2024. The first S$20,000 of chargeable income is tax-free, providing relief for lower-income earners. The tax rates increase progressively across income brackets, with the highest marginal rate of 22% applying to income exceeding S$320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle-income residents.",
+            "Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for the Year of Assessment 2024. The first $20,000 of chargeable income is tax-free, providing relief for lower-income earners. The tax rates increase progressively across income brackets, with the highest marginal rate of 22% applying to income exceeding $320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle-income residents.",
             "",
             "**PROGRESSIVE TAX RATE STRUCTURE**",
             "",
             "**Income Bracket | Tax Rate | Tax on Bracket**",
-            "• First S$20,000: **0%** (tax-free)",
-            "• Next S$10,000 (S$20,001-S$30,000): **2%** = S$200",
-            "• Next S$10,000 (S$30,001-S$40,000): **3.5%** = S$350",
-            "• Next S$40,000 (S$40,001-S$80,000): **7%** = S$2,800",
-            "• Next S$40,000 (S$80,001-S$120,000): **11.5%** = S$4,600",
-            "• Next S$40,000 (S$120,001-S$160,000): **15%** = S$6,000",
-            "• Next S$40,000 (S$160,001-S$200,000): **18%** = S$7,200",
-            "• Next S$40,000 (S$200,001-S$240,000): **19%** = S$7,600",
-            "• Next S$40,000 (S$240,001-S$280,000): **19.5%** = S$7,800",
-            "• Next S$40,000 (S$280,001-S$320,000): **20%** = S$8,000",
-            "• Income above S$320,000: **22%**",
+            "• First $20,000: **0%** (tax-free)",
+            "• Next $10,000 ($20,001-$30,000): **2%** = $200",
+            "• Next $10,000 ($30,001-$40,000): **3.5%** = $350",
+            "• Next $40,000 ($40,001-$80,000): **7%** = $2,800",
+            "• Next $40,000 ($80,001-$120,000): **11.5%** = $4,600",
+            "• Next $40,000 ($120,001-$160,000): **15%** = $6,000",
+            "• Next $40,000 ($160,001-$200,000): **18%** = $7,200",
+            "• Next $40,000 ($200,001-$240,000): **19%** = $7,600",
+            "• Next $40,000 ($240,001-$280,000): **19.5%** = $7,800",
+            "• Next $40,000 ($280,001-$320,000): **20%** = $8,000",
+            "• Income above $320,000: **22%**",
             "",
-            "**Total tax on first S$320,000 = S$44,550**",
+            "**Total tax on first $320,000 = $44,550**",
             "",
             "**KEY POINTS TO UNDERSTAND**",
             "",
@@ -292,9 +292,9 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         
         # Format response with comprehensive details
         lines = [
-            f"Tax Calculation for Annual Income: S${income:,.0f}",
+            f"Tax Calculation for Annual Income: ${income:,.0f}",
             "",
-            f"For a Singapore tax resident earning S${income:,.0f} annually, the tax calculation follows the progressive rate structure where different portions of income are taxed at increasing rates. The first S$20,000 is completely tax-free, and subsequent brackets are taxed progressively. This ensures a fair tax system where the effective tax rate is always lower than the marginal rate.",
+            f"For a Singapore tax resident earning ${income:,.0f} annually, the tax calculation follows the progressive rate structure where different portions of income are taxed at increasing rates. The first $20,000 is completely tax-free, and subsequent brackets are taxed progressively. This ensures a fair tax system where the effective tax rate is always lower than the marginal rate.",
             ""
         ]
         
@@ -305,10 +305,10 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             lines.append("• You pay NO income tax")
         elif income <= 30000:
             lines.append("• Your marginal tax rate: 2%")
-            lines.append("• Only income above S$20,000 is taxed")
+            lines.append("• Only income above $20,000 is taxed")
         elif income <= 40000:
             lines.append("• Your marginal tax rate: 3.5%")
-            lines.append("• First S$20,000 remains tax-free")
+            lines.append("• First $20,000 remains tax-free")
         elif income <= 80000:
             lines.append("• Your marginal tax rate: 7%")
             lines.append("• You're in the middle-income bracket")
@@ -338,49 +338,49 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         # Build progressive calculation breakdown
         lines.append("PROGRESSIVE TAX BREAKDOWN:")
         if income > 0:
-            lines.append("• First S$20,000 at 0% = S$0 (tax-free)")
+            lines.append("• First $20,000 at 0% = $0 (tax-free)")
         if income > 20000:
             amt = min(income - 20000, 10000)
-            lines.append(f"• Next S${amt:,.0f} at 2% = S${amt * 0.02:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 2% = ${amt * 0.02:,.0f}")
         if income > 30000:
             amt = min(income - 30000, 10000)
-            lines.append(f"• Next S${amt:,.0f} at 3.5% = S${amt * 0.035:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 3.5% = ${amt * 0.035:,.0f}")
         if income > 40000:
             amt = min(income - 40000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 7% = S${amt * 0.07:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 7% = ${amt * 0.07:,.0f}")
         if income > 80000:
             amt = min(income - 80000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 11.5% = S${amt * 0.115:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 11.5% = ${amt * 0.115:,.0f}")
         if income > 120000:
             amt = min(income - 120000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 15% = S${amt * 0.15:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 15% = ${amt * 0.15:,.0f}")
         if income > 160000:
             amt = min(income - 160000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 18% = S${amt * 0.18:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 18% = ${amt * 0.18:,.0f}")
         if income > 200000:
             amt = min(income - 200000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 19% = S${amt * 0.19:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 19% = ${amt * 0.19:,.0f}")
         if income > 240000:
             amt = min(income - 240000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 19.5% = S${amt * 0.195:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 19.5% = ${amt * 0.195:,.0f}")
         if income > 280000:
             amt = min(income - 280000, 40000)
-            lines.append(f"• Next S${amt:,.0f} at 20% = S${amt * 0.20:,.0f}")
+            lines.append(f"• Next ${amt:,.0f} at 20% = ${amt * 0.20:,.0f}")
         if income > 320000:
             amt = income - 320000
-            lines.append(f"• Income above S$320,000: S${amt:,.0f} at 22% = S${amt * 0.22:,.0f}")
+            lines.append(f"• Income above $320,000: ${amt:,.0f} at 22% = ${amt * 0.22:,.0f}")
         
         lines.append("")
         lines.append("SUMMARY:")
-        lines.append(f"• Gross Annual Income: S${income:,.0f}")
-        lines.append(f"• Total Tax Payable: S${tax:,.0f}")
+        lines.append(f"• Gross Annual Income: ${income:,.0f}")
+        lines.append(f"• Total Tax Payable: ${tax:,.0f}")
         lines.append(f"• Effective Tax Rate: {effective:.2f}%")
-        lines.append(f"• Net Income (After Tax): S${income-tax:,.0f}")
+        lines.append(f"• Net Income (After Tax): ${income-tax:,.0f}")
         lines.append("")
         lines.append("MONTHLY BREAKDOWN:")
-        lines.append(f"• Monthly Gross: S${income/12:,.0f}")
-        lines.append(f"• Monthly Tax: S${tax/12:,.0f}")
-        lines.append(f"• Monthly Net: S${(income-tax)/12:,.0f}")
+        lines.append(f"• Monthly Gross: ${income/12:,.0f}")
+        lines.append(f"• Monthly Tax: ${tax/12:,.0f}")
+        lines.append(f"• Monthly Net: ${(income-tax)/12:,.0f}")
         
         # Add helpful context
         lines.append("")
@@ -397,11 +397,11 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     # Spouse Relief - COMPREHENSIVE
     if 'spouse relief' in q_lower:
         lines = [
-            "**Spouse Relief in Singapore: S$2,000**",
+            "**Spouse Relief in Singapore: $2,000**",
             "",
             "**Eligibility Requirements:**",
             "• Legally married (includes void marriages if still living together)",
-            "• Spouse's annual income must be ≤ S$4,000",
+            "• Spouse's annual income must be ≤ $4,000",
             "• You must be supporting your spouse financially",
             "• Spouse must be living with you (or you're supporting if living apart)",
             "",
@@ -413,22 +413,22 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "**Cannot Claim If:**",
             "• Legally separated under court order",
             "• Divorced during the year",
-            "• Spouse's income exceeds S$4,000",
+            "• Spouse's income exceeds $4,000",
             "• Not supporting spouse financially",
             "",
             "**Additional Relief:**",
-            "• Handicapped Spouse Relief: Extra S$5,500",
-            "• Total with handicapped: S$7,500",
+            "• Handicapped Spouse Relief: Extra $5,500",
+            "• Total with handicapped: $7,500",
             "• Handicapped = physically/mentally disabled",
             "",
             "**Example Scenarios:**",
             "*Can claim:*",
             "• Spouse is homemaker with no income ✓",
-            "• Spouse earns S$3,000/year part-time ✓",
+            "• Spouse earns $3,000/year part-time ✓",
             "• Supporting spouse overseas for studies ✓",
             "",
             "*Cannot claim:*",
-            "• Spouse earns S$5,000/year ✘",
+            "• Spouse earns $5,000/year ✘",
             "• Both spouses working full-time ✘",
             "• Separated but not legally divorced ✘"
         ]
@@ -439,8 +439,8 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "**Child Relief in Singapore:**",
             "",
             "**Relief Amounts:**",
-            "• Normal child: S$4,000 per child",
-            "• Handicapped child: S$7,500 per child",
+            "• Normal child: $4,000 per child",
+            "• Handicapped child: $7,500 per child",
             "• No limit on number of children",
             "",
             "**Qualifying Conditions:**",
@@ -453,7 +453,7 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "  - Handicapped (any age)",
             "",
             "**Sharing Between Parents:**",
-            "• Default: Equally shared (S$2,000 each)",
+            "• Default: Equally shared ($2,000 each)",
             "• Can agree to different apportionment",
             "• Total cannot exceed relief amount",
             "• Must notify IRAS if changing apportionment",
@@ -463,18 +463,18 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "• 15% of earned income for 1st child",
             "• 20% for 2nd child",
             "• 25% for 3rd and subsequent children",
-            "• Maximum S$50,000 per child (QCR + WMCR combined)",
+            "• Maximum $50,000 per child (QCR + WMCR combined)",
             "",
             "**Example for Family with 3 Children:**",
             "*Basic Child Relief:*",
-            "• 3 children × S$4,000 = S$12,000 total",
-            "• Each parent claims S$6,000 (if shared equally)",
+            "• 3 children × $4,000 = $12,000 total",
+            "• Each parent claims $6,000 (if shared equally)",
             "",
-            "*If mother earns S$80,000:*",
-            "• WMCR 1st child: 15% × S$80,000 = S$12,000",
-            "• WMCR 2nd child: 20% × S$80,000 = S$16,000",
-            "• WMCR 3rd child: 25% × S$80,000 = S$20,000",
-            "• Total WMCR: S$48,000",
+            "*If mother earns $80,000:*",
+            "• WMCR 1st child: 15% × $80,000 = $12,000",
+            "• WMCR 2nd child: 20% × $80,000 = $16,000",
+            "• WMCR 3rd child: 25% × $80,000 = $20,000",
+            "• Total WMCR: $48,000",
             "",
             "**Special Situations:**",
             "• Divorced parents: Custodial parent claims",
@@ -488,18 +488,18 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "**Parent Relief in Singapore:**",
             "",
             "**Relief Amounts:**",
-            "• Normal parent: S$9,000 per parent",
-            "• Handicapped parent: S$14,000 per parent",
+            "• Normal parent: $9,000 per parent",
+            "• Handicapped parent: $14,000 per parent",
             "• Can claim for up to 2 parents + 2 parents-in-law",
             "",
             "**Eligibility Criteria:**",
             "• Parent must be:",
             "  - Age 55 or above in the year",
-            "  - Income ≤ S$4,000 per year",
+            "  - Income ≤ $4,000 per year",
             "  - Living in Singapore (or overseas with you)",
             "",
             "• You must have:",
-            "  - Provided at least S$2,000 support in cash/kind",
+            "  - Provided at least $2,000 support in cash/kind",
             "  - Actually incurred expense (not just promise)",
             "",
             "**Who Qualifies as 'Parent':**",
@@ -519,19 +519,19 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "",
             "*Scenario 1: Supporting both parents*",
             "• Both parents age 60+, no income",
-            "• You provide S$500/month to each",
-            "• Total relief: S$9,000 × 2 = S$18,000",
+            "• You provide $500/month to each",
+            "• Total relief: $9,000 × 2 = $18,000",
             "",
             "*Scenario 2: Shared with sibling*",
             "• You and sibling support mother",
             "• Agree to 60-40 split",
-            "• You claim: S$9,000 × 60% = S$5,400",
-            "• Sibling claims: S$9,000 × 40% = S$3,600",
+            "• You claim: $9,000 × 60% = $5,400",
+            "• Sibling claims: $9,000 × 40% = $3,600",
             "",
             "**Cannot Claim If:**",
-            "• Parent's income > S$4,000",
+            "• Parent's income > $4,000",
             "• Parent below age 55",
-            "• Support given < S$2,000",
+            "• Support given < $2,000",
             "• Parent not living in Singapore (unless with you overseas)"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
@@ -539,7 +539,7 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     if 'earned income relief' in q_lower:
         lines = [
             "Earned Income Relief: Automatic tax relief",
-            "• Lower of S$1,000 or 1% of earned income",
+            "• Lower of $1,000 or 1% of earned income",
             "• Automatically granted to all tax residents",
             "• No need to claim - IRAS applies it automatically",
             "• Helps reduce taxable income for all working individuals"
@@ -549,9 +549,9 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     # Thresholds
     if any(w in q_lower for w in ['start paying', 'threshold', 'tax free']):
         lines = [
-            "Tax-free threshold in Singapore: S$20,000",
-            "• You only start paying income tax when annual income exceeds S$20,000",
-            "• The first S$20,000 of income is always tax-free (0% rate)",
+            "Tax-free threshold in Singapore: $20,000",
+            "• You only start paying income tax when annual income exceeds $20,000",
+            "• The first $20,000 of income is always tax-free (0% rate)",
             "• This applies to Singapore tax residents only",
             "• Non-residents don't get this tax-free threshold"
         ]
@@ -560,9 +560,9 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     if 'highest' in q_lower and ('rate' in q_lower or 'tax' in q_lower):
         lines = [
             "Highest personal income tax rate: 22%",
-            "• Applies to income above S$320,000 per year", 
+            "• Applies to income above $320,000 per year", 
             "• Singapore uses a progressive tax system with rates from 0% to 22%",
-            "• First S$20,000 is tax-free for all residents",
+            "• First $20,000 is tax-free for all residents",
             "• Non-residents pay different rates (15% or progressive, whichever higher)"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
@@ -572,7 +572,7 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         lines = [
             "**Goods and Services Tax (GST) in Singapore**",
             "",
-            "Singapore's GST is currently set at 9%, having increased from 8% on 1 January 2024. This consumption tax applies to most goods and services supplied in Singapore, as well as imports. Despite the recent increase, Singapore maintains one of the lowest GST rates globally, making it competitive for businesses and relatively affordable for consumers. Businesses with annual taxable turnover exceeding S$1 million must register for GST and charge it on their supplies, while also being able to claim back GST paid on their business purchases.",
+            "Singapore's GST is currently set at 9%, having increased from 8% on 1 January 2024. This consumption tax applies to most goods and services supplied in Singapore, as well as imports. Despite the recent increase, Singapore maintains one of the lowest GST rates globally, making it competitive for businesses and relatively affordable for consumers. Businesses with annual taxable turnover exceeding $1 million must register for GST and charge it on their supplies, while also being able to claim back GST paid on their business purchases.",
             "",
             "**CURRENT GST RATE AND HISTORY**",
             "",
@@ -593,18 +593,18 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "**REGISTRATION REQUIREMENTS**",
             "",
             "**Mandatory Registration:**",
-            "• Annual taxable turnover exceeds S$1 million",
+            "• Annual taxable turnover exceeds $1 million",
             "• Must register within 30 days of exceeding threshold",
             "• Once registered, must charge GST on all taxable supplies",
             "",
             "**Voluntary Registration:**",
-            "• Businesses below S$1 million threshold can choose to register",
+            "• Businesses below $1 million threshold can choose to register",
             "• Benefits include claiming input tax and enhanced credibility",
             "• Must remain registered for at least 2 years",
             "",
             "**Filing Obligations:**",
             "• Quarterly returns (default for most businesses)",
-            "• Monthly returns (if annual turnover > S$5 million)",
+            "• Monthly returns (if annual turnover > $5 million)",
             "• Electronic filing mandatory via myTax Portal",
             "",
             "**ZERO-RATED SUPPLIES (0% GST)**",
@@ -624,12 +624,12 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "• Financial services (loans, life insurance, currency exchange)",
             "• Sale and lease of residential properties",
             "• Digital payment tokens (cryptocurrency)",
-            "• Imported services under S$1 million (for non-GST registered entities)",
+            "• Imported services under $1 million (for non-GST registered entities)",
             "",
             "**CONSUMER IMPACT AND RELIEF MEASURES**",
             "",
             "• **Price Displays**: Must include GST (no hidden charges)",
-            "• **Tourist Refund Scheme**: Minimum S$100 purchase for refund eligibility",
+            "• **Tourist Refund Scheme**: Minimum $100 purchase for refund eligibility",
             "• **GST Vouchers**: Government support for lower-income households",
             "• **Essential Items**: Basic food items, water, and healthcare remain GST-absorbed",
             "",
@@ -648,8 +648,8 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
             "",
             "**COMPLIANCE AND PENALTIES**",
             "",
-            "• Late registration: Penalty up to S$10,000",
-            "• Late filing: S$200 per month (max S$10,000)",
+            "• Late registration: Penalty up to $10,000",
+            "• Late filing: $200 per month (max $10,000)",
             "• Incorrect returns: 5% penalty on understated tax",
             "• Fraud/evasion: Up to 3 times tax amount + prosecution"
         ]
@@ -869,53 +869,53 @@ def answer_question(question):
             answer = """**GST (Goods and Services Tax): 9%**
 • Increased from 8% to 9% on 1 January 2024
 • Applies to most goods and services supplied in Singapore
-• Registration mandatory if annual taxable turnover exceeds S$1 million
+• Registration mandatory if annual taxable turnover exceeds $1 million
 • Zero-rated items: Exports, international services
 • Exempt items: Financial services, residential property sales/rental
-• Tourists can claim GST refund on purchases over S$100"""
+• Tourists can claim GST refund on purchases over $100"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'filing deadline':
             answer = """**Tax Filing Deadlines for 2024:**
 • Paper filing: 18 April 2024
 • E-filing: 15 May 2024 (extended deadline)
-• Late filing penalties: 5% of tax payable (minimum S$200)
+• Late filing penalties: 5% of tax payable (minimum $200)
 • Payment deadline: Within 30 days of Notice of Assessment
 • GIRO payment: Automatic deduction, up to 12 interest-free installments"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'child relief':
             answer = """**Child Relief Amounts:**
-• S$4,000 per qualifying child
-• S$7,500 per handicapped child
+• $4,000 per qualifying child
+• $7,500 per handicapped child
 • Qualifying conditions:
   - Child must be unmarried
   - Under 16, or studying full-time if older
   - Singapore citizen at time of birth/adoption
 • Working Mother's Child Relief (WMCR): Additional 15-25% of earned income
-• Maximum combined relief: S$50,000 per child (shared between parents)"""
+• Maximum combined relief: $50,000 per child (shared between parents)"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'income tax':
             answer = """Personal Income Tax Rates for Singapore Residents (2024)
 
-Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for Year of Assessment 2024. The first S$20,000 of chargeable income is completely tax-free, providing significant relief for lower-income earners. Tax rates then increase progressively across income brackets, with the highest marginal rate of 22% applying only to income exceeding S$320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle and lower-income residents.
+Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for Year of Assessment 2024. The first $20,000 of chargeable income is completely tax-free, providing significant relief for lower-income earners. Tax rates then increase progressively across income brackets, with the highest marginal rate of 22% applying only to income exceeding $320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle and lower-income residents.
 
 PROGRESSIVE TAX RATE STRUCTURE:
 
-• First S$20,000: 0% (tax-free threshold)
-• Next S$10,000 (S$20,001-S$30,000): 2% = S$200
-• Next S$10,000 (S$30,001-S$40,000): 3.5% = S$350  
-• Next S$40,000 (S$40,001-S$80,000): 7% = S$2,800
-• Next S$40,000 (S$80,001-S$120,000): 11.5% = S$4,600
-• Next S$40,000 (S$120,001-S$160,000): 15% = S$6,000
-• Next S$40,000 (S$160,001-S$200,000): 18% = S$7,200
-• Next S$40,000 (S$200,001-S$240,000): 19% = S$7,600
-• Next S$40,000 (S$240,001-S$280,000): 19.5% = S$7,800
-• Next S$40,000 (S$280,001-S$320,000): 20% = S$8,000
-• Above S$320,000: 22%
+• First $20,000: 0% (tax-free threshold)
+• Next $10,000 ($20,001-$30,000): 2% = $200
+• Next $10,000 ($30,001-$40,000): 3.5% = $350  
+• Next $40,000 ($40,001-$80,000): 7% = $2,800
+• Next $40,000 ($80,001-$120,000): 11.5% = $4,600
+• Next $40,000 ($120,001-$160,000): 15% = $6,000
+• Next $40,000 ($160,001-$200,000): 18% = $7,200
+• Next $40,000 ($200,001-$240,000): 19% = $7,600
+• Next $40,000 ($240,001-$280,000): 19.5% = $7,800
+• Next $40,000 ($280,001-$320,000): 20% = $8,000
+• Above $320,000: 22%
 
-Total tax on first S$320,000 = S$44,550
+Total tax on first $320,000 = $44,550
 
 KEY POINTS:
 • These rates apply to tax residents (those in Singapore 183 days or more per year)
@@ -927,22 +927,22 @@ KEY POINTS:
         elif topic == 'corporate tax':
             answer = """**Corporate Tax Rate: 17% (flat rate)**
 • Partial tax exemption on normal chargeable income:
-  - 75% exemption on first S$10,000 (save S$1,275)
-  - 50% exemption on next S$190,000 (save S$16,150)
+  - 75% exemption on first $10,000 (save $1,275)
+  - 50% exemption on next $190,000 (save $16,150)
 • Start-up tax exemption (first 3 years):
-  - 75% exemption on first S$100,000
-  - 50% exemption on next S$100,000
+  - 75% exemption on first $100,000
+  - 50% exemption on next $100,000
 • One-tier system: Dividends tax-free to shareholders
 • Effective tax rate examples:
-  - S$100,000 profit: ~8.5% effective rate
-  - S$300,000 profit: ~11.3% effective rate"""
+  - $100,000 profit: ~8.5% effective rate
+  - $300,000 profit: ~11.3% effective rate"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'spouse relief':
-            answer = """**Spouse Relief: S$2,000**
+            answer = """**Spouse Relief: $2,000**
 • Qualifying conditions:
   - Legally married (includes void marriages if living together)
-  - Spouse's annual income ≤ S$4,000
+  - Spouse's annual income ≤ $4,000
   - Supporting spouse financially
 • Only ONE spouse can claim (not both)
 • Cannot claim if:
@@ -953,57 +953,57 @@ KEY POINTS:
             
         elif topic == 'parent relief':
             answer = """**Parent Relief Amounts:**
-• S$9,000 per parent (normal)
-• S$14,000 per parent (handicapped)
+• $9,000 per parent (normal)
+• $14,000 per parent (handicapped)
 • Qualifying conditions:
   - Parent must be 55+ years old
-  - Parent's annual income ≤ S$4,000
-  - You provided ≥ S$2,000 support in the year
+  - Parent's annual income ≤ $4,000
+  - You provided ≥ $2,000 support in the year
   - Parent living in Singapore/with you
 • Can be shared among siblings
 • Includes parents-in-law
-• Maximum 2 parents + 2 parents-in-law = S$36,000 (or S$56,000 if handicapped)"""
+• Maximum 2 parents + 2 parents-in-law = $36,000 (or $56,000 if handicapped)"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'tax threshold':
             answer = """Income Tax Threshold in Singapore
 
-Singapore residents effectively start paying income tax once their annual chargeable income exceeds S$20,000. This is because the first S$20,000 of chargeable income is taxed at 0%, providing a tax-free threshold that benefits all resident taxpayers. However, it's important to note that individuals earning above S$22,000 in gross annual income are required to file a tax return, even though they may not owe any tax after applying personal reliefs and deductions.
+Singapore residents effectively start paying income tax once their annual chargeable income exceeds $20,000. This is because the first $20,000 of chargeable income is taxed at 0%, providing a tax-free threshold that benefits all resident taxpayers. However, it's important to note that individuals earning above $22,000 in gross annual income are required to file a tax return, even though they may not owe any tax after applying personal reliefs and deductions.
 
 TAX-FREE THRESHOLD:
-• First S$20,000 of chargeable income: 0% tax rate
-• This means no tax is payable on the first S$20,000
+• First $20,000 of chargeable income: 0% tax rate
+• This means no tax is payable on the first $20,000
 • Applies automatically to all tax residents
 • Non-residents do NOT get this tax-free threshold
 
 FILING REQUIREMENTS:
-• Must file if annual income exceeds S$22,000
+• Must file if annual income exceeds $22,000
 • Even if no tax is payable after reliefs
 • Auto-inclusion scheme may apply for employment income
 • Penalties apply for non-filing even if no tax due
 
 PRACTICAL EXAMPLES:
-• Earning S$20,000: Pay S$0 tax
-• Earning S$25,000: Pay tax only on S$5,000 (at 2% = S$100)
-• Earning S$30,000: Pay tax only on S$10,000 (S$200 total)
+• Earning $20,000: Pay $0 tax
+• Earning $25,000: Pay tax only on $5,000 (at 2% = $100)
+• Earning $30,000: Pay tax only on $10,000 ($200 total)
 
 KEY POINTS:
-• S$20,000 threshold applies to chargeable income (after deductions)
+• $20,000 threshold applies to chargeable income (after deductions)
 • With reliefs, actual tax-free income can be much higher
-• For example, with S$15,000 in reliefs, you could earn S$35,000 gross and still pay no tax"""
+• For example, with $15,000 in reliefs, you could earn $35,000 gross and still pay no tax"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'highest rate':
             answer = """Highest Marginal Tax Rate in Singapore
 
-The highest marginal tax rate for individual income tax in Singapore is 22% for tax residents, applicable to chargeable income exceeding S$320,000. For non-residents, the situation is more complex: employment income is taxed at either 15% flat rate or progressive rates (whichever is higher), while other income types such as director's fees and professional income are taxed at a flat 24% rate.
+The highest marginal tax rate for individual income tax in Singapore is 22% for tax residents, applicable to chargeable income exceeding $320,000. For non-residents, the situation is more complex: employment income is taxed at either 15% flat rate or progressive rates (whichever is higher), while other income types such as director's fees and professional income are taxed at a flat 24% rate.
 
 FOR TAX RESIDENTS:
 • Highest marginal rate: 22%
-• Applies to income above S$320,000
+• Applies to income above $320,000
 • Reached after progressing through 11 tax brackets
-• Total tax on first S$320,000 = S$44,550
-• Effective rate at S$1 million income is approximately 19.4%
+• Total tax on first $320,000 = $44,550
+• Effective rate at $1 million income is approximately 19.4%
 
 FOR NON-RESIDENTS:
 • Employment income: 15% or progressive rates (whichever HIGHER)
@@ -1020,24 +1020,24 @@ INTERNATIONAL CONTEXT:
 IMPORTANT NOTE:
 • Marginal rate = tax on your last dollar earned
 • Effective rate = total tax divided by total income (always lower)
-• Even at S$1 million income, effective rate is under 20%"""
+• Even at $1 million income, effective rate is under 20%"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'non-resident tax':
             answer = """Non-Resident Tax Rates in Singapore
 
-Non-residents in Singapore face different tax treatment than residents, generally resulting in higher tax obligations. Employment income is taxed at either 15% flat rate or progressive resident rates (whichever is higher), while other income types like director's fees and professional income are taxed at a flat 24%. Non-residents cannot claim any personal reliefs or the S$20,000 tax-free threshold that residents enjoy.
+Non-residents in Singapore face different tax treatment than residents, generally resulting in higher tax obligations. Employment income is taxed at either 15% flat rate or progressive resident rates (whichever is higher), while other income types like director's fees and professional income are taxed at a flat 24%. Non-residents cannot claim any personal reliefs or the $20,000 tax-free threshold that residents enjoy.
 
 EMPLOYMENT INCOME:
 • Taxed at 15% flat rate OR progressive rates (whichever produces HIGHER tax)
-• No S$20,000 tax-free threshold
+• No $20,000 tax-free threshold
 • No personal reliefs or deductions allowed
 
 CALCULATION EXAMPLES:
-• S$30,000 salary: 15% = S$4,500 (resident pays only S$200)
-• S$60,000 salary: 15% = S$9,000 (resident pays S$1,950)
-• S$80,000 salary: 15% = S$12,000 (resident pays S$3,350)
-• S$500,000 salary: Progressive rates = S$88,150 (exceeds 15%)
+• $30,000 salary: 15% = $4,500 (resident pays only $200)
+• $60,000 salary: 15% = $9,000 (resident pays $1,950)
+• $80,000 salary: 15% = $12,000 (resident pays $3,350)
+• $500,000 salary: Progressive rates = $88,150 (exceeds 15%)
 
 OTHER INCOME TYPES:
 • Director's fees: 24% withholding tax
@@ -1053,7 +1053,7 @@ EMPLOYMENT DURATION RULES:
 • 183 days or more: Qualify as tax resident for that year
 
 KEY DISADVANTAGES:
-• No S$20,000 tax-free threshold
+• No $20,000 tax-free threshold
 • No personal reliefs (spouse, child, parent, etc.)
 • No CPF relief or earned income relief
 • Generally pay 3-5 times more tax than residents at lower incomes
@@ -1070,11 +1070,11 @@ KEY DISADVANTAGES:
             answer = """Tax Overview for Singapore:
 
 GST: 9% (increased from 8% in 2024)
-• Registration required if turnover > S$1 million
+• Registration required if turnover > $1 million
 
 Personal Income Tax: Progressive rates from 0% to 22%
-• First S$20,000 tax-free
-• Top rate of 22% for income > S$320,000
+• First $20,000 tax-free
+• Top rate of 22% for income > $320,000
 
 Corporate Tax: 17% flat rate
 • With partial exemptions for smaller profits
