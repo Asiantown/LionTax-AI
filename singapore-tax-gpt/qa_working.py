@@ -124,55 +124,79 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
     # CHECK NON-RESIDENT FIRST - before general tax rate check
     if 'non-resident' in q_lower or 'non resident' in q_lower or 'non residents' in q_lower or 'foreigner' in q_lower:
         lines = [
-            "**Non-Resident Tax Rates in Singapore (2024):**",
+            "**Non-Resident Tax Rates in Singapore (2024)**",
             "",
-            "**EMPLOYMENT INCOME:**",
-            "• Taxed at 15% flat rate OR progressive resident rates - whichever is HIGHER",
-            "• No personal reliefs available (no $20,000 tax-free threshold)",
-            "• No deductions or rebates allowed",
+            "Non-residents in Singapore are subject to different tax treatment compared to residents, generally resulting in higher tax obligations. For employment income, non-residents are taxed at either a flat 15% rate or the progressive resident rates, whichever produces a higher tax amount. Other types of income such as director's fees, consultancy fees, and rental income are taxed at a flat 24% rate. Non-residents do not enjoy any personal reliefs or the $20,000 tax-free threshold that residents receive, making their effective tax rates substantially higher, especially for lower income levels.",
             "",
-            "**WHY 'WHICHEVER IS HIGHER'?**",
-            "• Low income earners: Pay 15% (more than residents would pay)",
-            "• High income earners: Pay progressive rates (more than 15%)",
+            "**EMPLOYMENT INCOME TAX RATES**",
             "",
-            "**DETAILED CALCULATIONS:**",
+            "Employment income for non-residents is taxed using a unique dual-rate system designed to ensure adequate tax collection:",
             "",
-            "*Example 1: Low Income ($30,000)*",
-            "• Non-resident: $30,000 × 15% = $4,500",
+            "• **15% flat rate OR progressive resident rates** - whichever results in HIGHER tax",
+            "• No personal reliefs or deductions allowed",
+            "• No $20,000 tax-free threshold (unlike residents)",
+            "• Applies to all wages, salaries, bonuses, and employment benefits",
+            "",
+            "**Why This Dual System?**",
+            "The government uses this approach to ensure fair taxation across income levels:",
+            "• **Lower incomes**: The 15% flat rate applies (higher than resident rates)",
+            "• **Higher incomes**: Progressive rates apply when they exceed 15%",
+            "",
+            "**DETAILED TAX CALCULATIONS**",
+            "",
+            "**Example 1: Low Income ($30,000 annual)**",
+            "• Non-resident tax: $30,000 × 15% = **$4,500**",
             "• Resident would pay: ~$200 (after $20,000 exemption)",
-            "• Non-resident pays $4,300 MORE",
+            "• Non-resident pays **$4,300 MORE** than a resident",
             "",
-            "*Example 2: Mid Income ($60,000)*",
-            "• Non-resident: $60,000 × 15% = $9,000",
-            "• Resident would pay: ~$1,950",
-            "• Non-resident pays $7,050 MORE",
+            "**Example 2: Middle Income ($80,000 annual)**",
+            "• Non-resident tax: $80,000 × 15% = **$12,000**",
+            "• Resident would pay: $3,350 (progressive rates)",
+            "• Non-resident pays **$8,650 MORE** than a resident",
             "",
-            "*Example 3: High Income ($500,000)*",
-            "• Non-resident at 15%: $75,000",
-            "• Progressive rates: ~$88,150",
-            "• Non-resident pays $88,150 (the HIGHER amount)",
+            "**Example 3: High Income ($500,000 annual)**",
+            "• 15% calculation: $500,000 × 15% = $75,000",
+            "• Progressive rate calculation: ~$88,150",
+            "• Non-resident pays **$88,150** (the higher amount)",
+            "• At this level, the progressive rate is used",
             "",
-            "**OTHER INCOME TYPES:**",
-            "• Director's fees: 24% withholding tax (increased from 22% in 2024)",
-            "• Professional/consultant fees: 24% of net or 15% of gross",
-            "• Business income: 24% flat rate",
-            "• Rental income: 24% for property",
-            "• Interest income: 15% withholding tax",
-            "• Royalties: 10% withholding tax",
-            "• Public entertainers: 15% concessionary rate",
+            "**OTHER INCOME TYPES (Fixed Rates)**",
             "",
-            "**IMPORTANT NOTES:**",
-            "• Work ≤60 days = TAX EXEMPT (except directors/entertainers/professionals)",
-            "• Work 61-182 days = Non-resident rates apply",
-            "• Work ≥183 days = Qualify as tax resident",
-            "• Tax treaties may reduce rates for certain countries",
+            "Non-employment income is generally taxed at fixed withholding rates:",
             "",
-            "**KEY DIFFERENCES FROM RESIDENTS:**",
-            "• No $20,000 tax-free threshold",
-            "• No personal reliefs (spouse, child, parent, etc.)",
-            "• No CPF relief",
-            "• No earned income relief",
-            "• Generally pay significantly more tax"
+            "• **Director's fees**: 24% (increased from 22% in 2024)",
+            "• **Consultancy/Professional fees**: 24% of net income",
+            "• **Business income**: 24% flat rate",
+            "• **Rental income**: 24% on gross rental",
+            "• **Interest income**: 15% withholding tax",
+            "• **Royalties**: 10% withholding tax",
+            "• **Public entertainers**: 15% concessionary rate",
+            "",
+            "**EMPLOYMENT DURATION RULES**",
+            "",
+            "Tax treatment varies significantly based on days worked in Singapore:",
+            "",
+            "• **≤60 days**: Generally TAX EXEMPT (except directors, entertainers, professionals)",
+            "• **61-182 days**: Non-resident tax rates apply",
+            "• **≥183 days**: Qualify as tax resident for that year",
+            "",
+            "**KEY DIFFERENCES FROM TAX RESIDENTS**",
+            "",
+            "Non-residents face several disadvantages compared to residents:",
+            "",
+            "1. **No tax-free threshold** - First $20,000 is taxable (residents get this tax-free)",
+            "2. **No personal reliefs** - Cannot claim spouse, child, or parent relief",
+            "3. **No deductions** - CPF contributions not deductible",
+            "4. **Higher effective rates** - Especially impactful on lower incomes",
+            "5. **Withholding tax** - Tax often deducted at source",
+            "",
+            "**ADDITIONAL INFORMATION**",
+            "",
+            "• Tax treaties with certain countries may reduce these rates",
+            "• Special rules apply for specific professions and industries",
+            "• Non-residents should consider tax equalization if employer-sponsored",
+            "• Filing requirements differ from residents",
+            "• Rates subject to change in future budget announcements"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
@@ -181,21 +205,34 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
        ('income tax rate' in q_lower and 'non' not in q_lower) or \
        ('tax rate' in q_lower and 'resident' in q_lower and 'non' not in q_lower) or \
        ('current' in q_lower and 'tax' in q_lower and 'non' not in q_lower):
-        # Build response with proper line breaks
         lines = [
-            "Current Singapore Resident Tax Rates (2024):",
+            "**Singapore Personal Income Tax Rates for Residents (2024)**",
             "",
-            "$0 - $20,000: 0%",
-            "$20,001 - $30,000: 2%",
-            "$30,001 - $40,000: 3.5%",
-            "$40,001 - $80,000: 7%",
-            "$80,001 - $120,000: 11.5%",
-            "$120,001 - $160,000: 15%",
-            "$160,001 - $200,000: 18%",
-            "$200,001 - $240,000: 19%",
-            "$240,001 - $280,000: 19.5%",
-            "$280,001 - $320,000: 20%",
-            "$320,001 and above: 22%"
+            "Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for the Year of Assessment 2024. The first S$20,000 of chargeable income is tax-free, providing relief for lower-income earners. The tax rates increase progressively across income brackets, with the highest marginal rate of 22% applying to income exceeding S$320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle-income residents.",
+            "",
+            "**PROGRESSIVE TAX RATE STRUCTURE**",
+            "",
+            "**Income Bracket | Tax Rate | Tax on Bracket**",
+            "• First S$20,000: **0%** (tax-free)",
+            "• Next S$10,000 (S$20,001-S$30,000): **2%** = S$200",
+            "• Next S$10,000 (S$30,001-S$40,000): **3.5%** = S$350",
+            "• Next S$40,000 (S$40,001-S$80,000): **7%** = S$2,800",
+            "• Next S$40,000 (S$80,001-S$120,000): **11.5%** = S$4,600",
+            "• Next S$40,000 (S$120,001-S$160,000): **15%** = S$6,000",
+            "• Next S$40,000 (S$160,001-S$200,000): **18%** = S$7,200",
+            "• Next S$40,000 (S$200,001-S$240,000): **19%** = S$7,600",
+            "• Next S$40,000 (S$240,001-S$280,000): **19.5%** = S$7,800",
+            "• Next S$40,000 (S$280,001-S$320,000): **20%** = S$8,000",
+            "• Income above S$320,000: **22%**",
+            "",
+            "**Total tax on first S$320,000 = S$44,550**",
+            "",
+            "**KEY POINTS TO UNDERSTAND**",
+            "",
+            "• **Progressive System**: Only income within each bracket is taxed at that bracket's rate",
+            "• **Marginal vs Effective Rate**: Your marginal rate is the tax on your last dollar earned; effective rate is your total tax divided by total income",
+            "• **Chargeable Income**: Tax rates apply after deducting personal reliefs and allowances",
+            "• **Tax Residency**: Must be in Singapore for at least 183 days to qualify for these rates"
         ]
         response = "\n".join(lines)
         return response, ["singapore_tax_facts.json"]
@@ -254,32 +291,48 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         effective = (tax / income * 100) if income > 0 else 0
         
         # Format response with comprehensive details
-        lines = [f"**Tax Calculation for Annual Income: ${income:,.0f}**", ""]
+        lines = [
+            f"**Tax Calculation for Annual Income: S${income:,.0f}**",
+            "",
+            f"For a Singapore tax resident earning S${income:,.0f} annually, the tax calculation follows the progressive rate structure where different portions of income are taxed at increasing rates. The first S$20,000 is completely tax-free, and subsequent brackets are taxed progressively. This ensures a fair tax system where the effective tax rate is always lower than the marginal rate.",
+            ""
+        ]
         
         # Show tax bracket summary first
-        lines.append("**Your Tax Bracket:**")
+        lines.append("**YOUR TAX POSITION**")
         if income <= 20000:
-            lines.append("• 0% bracket (tax-free threshold)")
+            lines.append("• You are in the 0% tax bracket (completely tax-free)")
+            lines.append("• You pay NO income tax")
         elif income <= 30000:
-            lines.append("• 2% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 2%")
+            lines.append("• Only income above S$20,000 is taxed")
         elif income <= 40000:
-            lines.append("• 3.5% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 3.5%")
+            lines.append("• First S$20,000 remains tax-free")
         elif income <= 80000:
-            lines.append("• 7% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 7%")
+            lines.append("• You're in the middle-income bracket")
         elif income <= 120000:
-            lines.append("• 11.5% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 11.5%")
+            lines.append("• Above median income level")
         elif income <= 160000:
-            lines.append("• 15% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 15%")
+            lines.append("• Upper-middle income bracket")
         elif income <= 200000:
-            lines.append("• 18% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 18%")
+            lines.append("• High-income bracket")
         elif income <= 240000:
-            lines.append("• 19% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 19%")
+            lines.append("• High-income bracket")
         elif income <= 280000:
-            lines.append("• 19.5% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 19.5%")
+            lines.append("• High-income bracket")
         elif income <= 320000:
-            lines.append("• 20% marginal tax bracket")
+            lines.append("• Your marginal tax rate: 20%")
+            lines.append("• Near top bracket")
         else:
-            lines.append("• 22% marginal tax bracket (highest)")
+            lines.append("• Your marginal tax rate: 22% (highest bracket)")
+            lines.append("• Additional income taxed at maximum rate")
         lines.append("")
         
         # Build progressive calculation breakdown
@@ -514,59 +567,102 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
-    # GST - COMPREHENSIVE
+    # GST - COMPREHENSIVE WITH EXPLANATION
     if 'gst' in q_lower:
         lines = [
-            "**GST (Goods and Services Tax) in Singapore: 9%**",
+            "**Goods and Services Tax (GST) in Singapore**",
             "",
-            "**Rate History:**",
-            "• Current: 9% (from 1 January 2024)",
+            "Singapore's GST is currently set at 9%, having increased from 8% on 1 January 2024. This consumption tax applies to most goods and services supplied in Singapore, as well as imports. Despite the recent increase, Singapore maintains one of the lowest GST rates globally, making it competitive for businesses and relatively affordable for consumers. Businesses with annual taxable turnover exceeding S$1 million must register for GST and charge it on their supplies, while also being able to claim back GST paid on their business purchases.",
+            "",
+            "**CURRENT GST RATE AND HISTORY**",
+            "",
+            "• **Current Rate: 9%** (effective 1 January 2024)",
             "• Previous: 8% (1 January 2023 - 31 December 2023)",
-            "• Before: 7% (2007-2022)",
+            "• Historical: 7% (2007-2022), 5% (2004-2007), 4% (2003), 3% (1994-2003)",
             "",
-            "**How It Works:**",
-            "• Added to most goods and services",
-            "• Example: $100 item → $109 with GST",
-            "• Businesses collect and remit to IRAS",
-            "• Can claim input tax on business purchases",
+            "The government implemented the increase in two stages to help citizens adjust, with various support measures including GST Vouchers for lower-income households.",
             "",
-            "**Registration Requirements:**",
-            "• Mandatory: Annual taxable turnover > $1 million",
-            "• Voluntary: Can register if < $1 million",
-            "• Must charge GST once registered",
-            "• File returns quarterly (monthly if >$5M turnover)",
+            "**HOW GST WORKS IN PRACTICE**",
             "",
-            "**Zero-Rated (0% GST):**",
+            "GST operates on a value-added basis throughout the supply chain:",
+            "",
+            "• **For Consumers**: Pay GST on final purchase price",
+            "• **For Businesses**: Charge GST on sales (output tax) and claim GST on purchases (input tax)",
+            "• **Example**: $100 item becomes $109 with GST ($100 + 9%)",
+            "",
+            "**REGISTRATION REQUIREMENTS**",
+            "",
+            "**Mandatory Registration:**",
+            "• Annual taxable turnover exceeds S$1 million",
+            "• Must register within 30 days of exceeding threshold",
+            "• Once registered, must charge GST on all taxable supplies",
+            "",
+            "**Voluntary Registration:**",
+            "• Businesses below S$1 million threshold can choose to register",
+            "• Benefits include claiming input tax and enhanced credibility",
+            "• Must remain registered for at least 2 years",
+            "",
+            "**Filing Obligations:**",
+            "• Quarterly returns (default for most businesses)",
+            "• Monthly returns (if annual turnover > S$5 million)",
+            "• Electronic filing mandatory via myTax Portal",
+            "",
+            "**ZERO-RATED SUPPLIES (0% GST)**",
+            "",
+            "Certain supplies are zero-rated, meaning no GST is charged but input tax can be claimed:",
+            "",
             "• Export of goods",
             "• International services",
-            "• Precious metals investment",
-            "• Aircraft/ship supplies",
+            "• Sale of precious metals for investment",
+            "• Supply of goods to ships/aircraft",
+            "• International transportation services",
             "",
-            "**Exempt (No GST):**",
-            "• Financial services (loans, life insurance)",
-            "• Residential property sales/rental",
-            "• Digital payment tokens",
-            "• Imported services <$1M for non-GST registered",
+            "**EXEMPT SUPPLIES (No GST)**",
             "",
-            "**Consumer Information:**",
-            "• Price displays must include GST",
-            "• Tourist refund available (min $100 purchase)",
-            "• GST Vouchers for lower-income households",
-            "• Essential items (basic food, water) remain GST-free",
+            "Some supplies are exempt from GST, and input tax cannot be claimed:",
             "",
-            "**International Comparison:**",
-            "• Singapore: 9%",
-            "• Malaysia: 6-10%", 
-            "• Japan: 10%",
-            "• UK: 20%",
-            "• One of lowest rates globally"
+            "• Financial services (loans, life insurance, currency exchange)",
+            "• Sale and lease of residential properties",
+            "• Digital payment tokens (cryptocurrency)",
+            "• Imported services under S$1 million (for non-GST registered entities)",
+            "",
+            "**CONSUMER IMPACT AND RELIEF MEASURES**",
+            "",
+            "• **Price Displays**: Must include GST (no hidden charges)",
+            "• **Tourist Refund Scheme**: Minimum S$100 purchase for refund eligibility",
+            "• **GST Vouchers**: Government support for lower-income households",
+            "• **Essential Items**: Basic food items, water, and healthcare remain GST-absorbed",
+            "",
+            "**INTERNATIONAL COMPARISON**",
+            "",
+            "Singapore's GST remains competitive globally:",
+            "",
+            "• **Singapore**: 9%",
+            "• **Thailand**: 7%",
+            "• **Malaysia**: 6-10% (varies by item)",
+            "• **Japan**: 10%",
+            "• **Australia**: 10%",
+            "• **China**: 13% (standard rate)",
+            "• **UK**: 20%",
+            "• **Denmark**: 25% (highest in the world)",
+            "",
+            "**COMPLIANCE AND PENALTIES**",
+            "",
+            "• Late registration: Penalty up to S$10,000",
+            "• Late filing: S$200 per month (max S$10,000)",
+            "• Incorrect returns: 5% penalty on understated tax",
+            "• Fraud/evasion: Up to 3 times tax amount + prosecution"
         ]
         return "\n".join(lines), ["singapore_tax_facts.json"]
     
-    # Corporate tax - COMPREHENSIVE
+    # Corporate tax - COMPREHENSIVE WITH EXPLANATION
     if 'corporate tax' in q_lower or 'company tax' in q_lower:
         lines = [
-            "**Corporate Income Tax in Singapore: 17% (Flat Rate)**",
+            "**Corporate Income Tax in Singapore**",
+            "",
+            "Singapore's corporate tax rate is a flat 17%, one of the most competitive rates in Asia and globally. This rate applies to both local and foreign companies on their Singapore-sourced income. The country operates on a territorial basis of taxation, meaning foreign-sourced income is generally not taxed unless remitted to Singapore. Additionally, Singapore's one-tier tax system means that dividends paid to shareholders are tax-free, eliminating double taxation. Companies also benefit from various tax exemptions that significantly reduce the effective tax rate, especially for start-ups and SMEs.",
+            "",
+            "**HEADLINE TAX RATE: 17% (Flat Rate)**",
             "",
             "**Tax System Features:**",
             "• Territorial taxation - only Singapore-sourced income taxed",
@@ -664,10 +760,12 @@ def detect_all_topics(text):
         ('spouse relief', r'spouse\s+relief|wife\s+relief|husband\s+relief'),
         ('parent relief', r'parent\s+relief|elderly\s+parent'),
         ('non-resident tax', r'non[\s-]?resident|foreigner.*tax'),
-        ('income tax', r'income\s+tax(?:\s+rate)?|personal\s+(?:income\s+)?tax|tell\s+me\s+about\s+income\s+tax'),
+        ('income tax', r'income\s+tax(?:\s+rate)?|personal\s+(?:income\s+)?tax|current.*personal.*tax|singapore.*resident.*tax'),
+        ('tax threshold', r'start\s+paying.*tax|income\s+level.*tax|when.*start.*pay.*tax|tax.*threshold'),
+        ('highest rate', r'highest.*rate|maximum.*rate|top.*rate|marginal.*rate.*highest'),
         ('corporate tax', r'corporate\s+tax|company\s+tax|tell\s+me\s+about\s+corporate'),
         ('gst', r'(?:what[\'s]*|whats?)\s+(?:is\s+)?(?:the\s+)?gst|gst\s+rate|tell\s+me\s+about\s+gst|about\s+gst'),
-        ('tax calculation', r'calculate\s+tax|tax\s+for\s+\$?[\d,]+|how\s+much\s+tax'),
+        ('tax calculation', r'calculate\s+tax|tax\s+for\s+\$?[\d,]+|how\s+much\s+tax|tax.*calculated.*earning'),
         ('all taxes', r'all\s+(?:at\s+)?once|everything\s+about|all\s+tax'),
     ]
     
@@ -799,19 +897,31 @@ def answer_question(question):
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'income tax':
-            answer = """**Personal Income Tax Rates for Residents (2024):**
-• First S$20,000: 0% (tax-free)
-• Next S$10,000: 2% = S$200
-• Next S$10,000: 3.5% = S$350  
-• Next S$40,000: 7% = S$2,800
-• Next S$40,000: 11.5% = S$4,600
-• Next S$40,000: 15% = S$6,000
-• Next S$40,000: 18% = S$7,200
-• Next S$40,000: 19% = S$7,600
-• Next S$40,000: 19.5% = S$7,800
-• Next S$40,000: 20% = S$8,000
-• Above S$320,000: 22%
-*Total tax on first S$320,000 = S$44,550*"""
+            answer = """**Personal Income Tax Rates for Singapore Residents (2024)**
+
+Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for Year of Assessment 2024. The first S$20,000 of chargeable income is completely tax-free, providing significant relief for lower-income earners. Tax rates then increase progressively across income brackets, with the highest marginal rate of 22% applying only to income exceeding S$320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle and lower-income residents.
+
+**PROGRESSIVE TAX RATE STRUCTURE**
+
+• First S$20,000: **0%** (tax-free threshold)
+• Next S$10,000 (S$20,001-S$30,000): **2%** = S$200
+• Next S$10,000 (S$30,001-S$40,000): **3.5%** = S$350  
+• Next S$40,000 (S$40,001-S$80,000): **7%** = S$2,800
+• Next S$40,000 (S$80,001-S$120,000): **11.5%** = S$4,600
+• Next S$40,000 (S$120,001-S$160,000): **15%** = S$6,000
+• Next S$40,000 (S$160,001-S$200,000): **18%** = S$7,200
+• Next S$40,000 (S$200,001-S$240,000): **19%** = S$7,600
+• Next S$40,000 (S$240,001-S$280,000): **19.5%** = S$7,800
+• Next S$40,000 (S$280,001-S$320,000): **20%** = S$8,000
+• Above S$320,000: **22%**
+
+**Total tax on first S$320,000 = S$44,550**
+
+**KEY POINTS**
+• These rates apply to tax residents (those in Singapore ≥183 days per year)
+• Rates apply to chargeable income (after deductions and reliefs)
+• Singapore has no capital gains tax or inheritance tax
+• Non-residents face different tax treatment (15% flat or progressive, whichever higher)"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'corporate tax':
@@ -855,24 +965,99 @@ def answer_question(question):
 • Maximum 2 parents + 2 parents-in-law = S$36,000 (or S$56,000 if handicapped)"""
             sources = ["singapore_tax_facts.json"]
             
+        elif topic == 'tax threshold':
+            answer = """**Income Tax Threshold in Singapore**
+
+Singapore residents effectively start paying income tax once their annual chargeable income exceeds S$20,000. This is because the first S$20,000 of chargeable income is taxed at 0%, providing a tax-free threshold that benefits all resident taxpayers. However, it's important to note that individuals earning above S$22,000 in gross annual income are required to file a tax return, even though they may not owe any tax after applying personal reliefs and deductions.
+
+**TAX-FREE THRESHOLD**
+• First S$20,000 of chargeable income: **0% tax rate**
+• This means no tax is payable on the first S$20,000
+• Applies automatically to all tax residents
+• Non-residents do NOT get this tax-free threshold
+
+**FILING REQUIREMENTS**
+• Must file if annual income exceeds S$22,000
+• Even if no tax is payable after reliefs
+• Auto-inclusion scheme may apply for employment income
+• Penalties apply for non-filing even if no tax due
+
+**PRACTICAL EXAMPLES**
+• Earning S$20,000: Pay S$0 tax
+• Earning S$25,000: Pay tax only on S$5,000 (at 2% = S$100)
+• Earning S$30,000: Pay tax only on S$10,000 (S$200 total)
+
+**KEY POINTS**
+• S$20,000 threshold applies to chargeable income (after deductions)
+• With reliefs, actual tax-free income can be much higher
+• For example, with S$15,000 in reliefs, you could earn S$35,000 gross and still pay no tax"""
+            sources = ["singapore_tax_facts.json"]
+            
+        elif topic == 'highest rate':
+            answer = """**Highest Marginal Tax Rate in Singapore**
+
+The highest marginal tax rate for individual income tax in Singapore is 22% for tax residents, applicable to chargeable income exceeding S$320,000. For non-residents, the situation is more complex: employment income is taxed at either 15% flat rate or progressive rates (whichever is higher), while other income types such as director's fees and professional income are taxed at a flat 24% rate.
+
+**FOR TAX RESIDENTS**
+• Highest marginal rate: **22%**
+• Applies to income above S$320,000
+• Reached after progressing through 11 tax brackets
+• Total tax on first S$320,000 = S$44,550
+• Effective rate at S$1 million income ≈ 19.4%
+
+**FOR NON-RESIDENTS**
+• Employment income: 15% or progressive rates (whichever HIGHER)
+• At high incomes, progressive rates (up to 22%) apply
+• Other income: **24% flat rate** (director's fees, consultancy, etc.)
+• This 24% rate is actually higher than resident rates
+
+**INTERNATIONAL CONTEXT**
+• Singapore's 22% top rate is very competitive globally
+• Compare: UK (45%), Australia (45%), USA (37% federal + state)
+• No capital gains tax or inheritance tax in Singapore
+• Overall tax burden remains low despite recent increases
+
+**IMPORTANT NOTE**
+• Marginal rate = tax on your last dollar earned
+• Effective rate = total tax ÷ total income (always lower)
+• Even at S$1 million income, effective rate is under 20%"""
+            sources = ["singapore_tax_facts.json"]
+            
         elif topic == 'non-resident tax':
-            answer = """**Non-Resident Tax Overview:**
-*Employment Income:*
-• 15% flat rate OR progressive rates (whichever HIGHER)
-• Example: S$60,000 salary = S$9,000 tax (15%)
-• Example: S$500,000 salary = S$88,150 tax (progressive)
+            answer = """**Non-Resident Tax Rates in Singapore**
 
-*Other Income:*
-• Director's fees: 24%
-• Professional fees: 24%
-• Rental income: 24%
-• Interest: 15%
-• Royalties: 10%
+Non-residents in Singapore face different tax treatment than residents, generally resulting in higher tax obligations. Employment income is taxed at either 15% flat rate or progressive resident rates (whichever is higher), while other income types like director's fees and professional income are taxed at a flat 24%. Non-residents cannot claim any personal reliefs or the S$20,000 tax-free threshold that residents enjoy.
 
-*Key Points:*
-• No personal reliefs or S$20,000 exemption
-• Work ≤60 days = tax exempt
-• Work ≥183 days = become tax resident"""
+**EMPLOYMENT INCOME**
+• Taxed at **15% flat rate OR progressive rates** (whichever produces HIGHER tax)
+• No S$20,000 tax-free threshold
+• No personal reliefs or deductions allowed
+
+**CALCULATION EXAMPLES**
+• **S$30,000 salary**: 15% = S$4,500 (resident pays only S$200)
+• **S$60,000 salary**: 15% = S$9,000 (resident pays S$1,950)
+• **S$80,000 salary**: 15% = S$12,000 (resident pays S$3,350)
+• **S$500,000 salary**: Progressive rates = S$88,150 (exceeds 15%)
+
+**OTHER INCOME TYPES**
+• Director's fees: **24%** withholding tax
+• Professional/consultancy fees: **24%**
+• Business income: **24%**
+• Rental income: **24%**
+• Interest income: **15%**
+• Royalties: **10%**
+
+**EMPLOYMENT DURATION RULES**
+• **≤60 days**: Generally tax exempt (except directors/entertainers/professionals)
+• **61-182 days**: Non-resident tax rates apply
+• **≥183 days**: Qualify as tax resident for that year
+
+**KEY DISADVANTAGES**
+• No S$20,000 tax-free threshold
+• No personal reliefs (spouse, child, parent, etc.)
+• No CPF relief or earned income relief
+• Generally pay 3-5 times more tax than residents at lower incomes
+• Tax treaties with some countries may provide relief"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic.startswith('calculate_'):
