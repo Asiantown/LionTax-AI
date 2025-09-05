@@ -292,14 +292,14 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         
         # Format response with comprehensive details
         lines = [
-            f"**Tax Calculation for Annual Income: S${income:,.0f}**",
+            f"Tax Calculation for Annual Income: S${income:,.0f}",
             "",
             f"For a Singapore tax resident earning S${income:,.0f} annually, the tax calculation follows the progressive rate structure where different portions of income are taxed at increasing rates. The first S$20,000 is completely tax-free, and subsequent brackets are taxed progressively. This ensures a fair tax system where the effective tax rate is always lower than the marginal rate.",
             ""
         ]
         
         # Show tax bracket summary first
-        lines.append("**YOUR TAX POSITION**")
+        lines.append("YOUR TAX POSITION:")
         if income <= 20000:
             lines.append("• You are in the 0% tax bracket (completely tax-free)")
             lines.append("• You pay NO income tax")
@@ -336,55 +336,55 @@ def get_factual_answer(question: str) -> Tuple[str, List[str]]:
         lines.append("")
         
         # Build progressive calculation breakdown
-        lines.append("**Progressive Tax Breakdown:**")
+        lines.append("PROGRESSIVE TAX BREAKDOWN:")
         if income > 0:
-            lines.append("• First $20,000 at 0% = $0 (tax-free)")
+            lines.append("• First S$20,000 at 0% = S$0 (tax-free)")
         if income > 20000:
             amt = min(income - 20000, 10000)
-            lines.append(f"• Next ${amt:,.0f} at 2% = ${amt * 0.02:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 2% = S${amt * 0.02:,.0f}")
         if income > 30000:
             amt = min(income - 30000, 10000)
-            lines.append(f"• Next ${amt:,.0f} at 3.5% = ${amt * 0.035:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 3.5% = S${amt * 0.035:,.0f}")
         if income > 40000:
             amt = min(income - 40000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 7% = ${amt * 0.07:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 7% = S${amt * 0.07:,.0f}")
         if income > 80000:
             amt = min(income - 80000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 11.5% = ${amt * 0.115:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 11.5% = S${amt * 0.115:,.0f}")
         if income > 120000:
             amt = min(income - 120000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 15% = ${amt * 0.15:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 15% = S${amt * 0.15:,.0f}")
         if income > 160000:
             amt = min(income - 160000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 18% = ${amt * 0.18:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 18% = S${amt * 0.18:,.0f}")
         if income > 200000:
             amt = min(income - 200000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 19% = ${amt * 0.19:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 19% = S${amt * 0.19:,.0f}")
         if income > 240000:
             amt = min(income - 240000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 19.5% = ${amt * 0.195:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 19.5% = S${amt * 0.195:,.0f}")
         if income > 280000:
             amt = min(income - 280000, 40000)
-            lines.append(f"• Next ${amt:,.0f} at 20% = ${amt * 0.20:,.0f}")
+            lines.append(f"• Next S${amt:,.0f} at 20% = S${amt * 0.20:,.0f}")
         if income > 320000:
             amt = income - 320000
-            lines.append(f"• Income above $320,000: ${amt:,.0f} at 22% = ${amt * 0.22:,.0f}")
+            lines.append(f"• Income above S$320,000: S${amt:,.0f} at 22% = S${amt * 0.22:,.0f}")
         
         lines.append("")
-        lines.append("**Summary:**")
-        lines.append(f"• Gross Annual Income: ${income:,.0f}")
-        lines.append(f"• Total Tax Payable: ${tax:,.0f}")
+        lines.append("SUMMARY:")
+        lines.append(f"• Gross Annual Income: S${income:,.0f}")
+        lines.append(f"• Total Tax Payable: S${tax:,.0f}")
         lines.append(f"• Effective Tax Rate: {effective:.2f}%")
-        lines.append(f"• Net Income (After Tax): ${income-tax:,.0f}")
+        lines.append(f"• Net Income (After Tax): S${income-tax:,.0f}")
         lines.append("")
-        lines.append("**Monthly Breakdown:**")
-        lines.append(f"• Monthly Gross: ${income/12:,.0f}")
-        lines.append(f"• Monthly Tax: ${tax/12:,.0f}")
-        lines.append(f"• Monthly Net: ${(income-tax)/12:,.0f}")
+        lines.append("MONTHLY BREAKDOWN:")
+        lines.append(f"• Monthly Gross: S${income/12:,.0f}")
+        lines.append(f"• Monthly Tax: S${tax/12:,.0f}")
+        lines.append(f"• Monthly Net: S${(income-tax)/12:,.0f}")
         
         # Add helpful context
         lines.append("")
-        lines.append("**Important Notes:**")
+        lines.append("IMPORTANT NOTES:")
         lines.append("• This is based on tax resident rates")
         lines.append("• Assumes no personal reliefs claimed")
         lines.append("• Actual tax may be lower with reliefs")
@@ -897,28 +897,28 @@ def answer_question(question):
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'income tax':
-            answer = """**Personal Income Tax Rates for Singapore Residents (2024)**
+            answer = """Personal Income Tax Rates for Singapore Residents (2024)
 
 Singapore operates a progressive tax system for residents, with rates ranging from 0% to 22% for Year of Assessment 2024. The first S$20,000 of chargeable income is completely tax-free, providing significant relief for lower-income earners. Tax rates then increase progressively across income brackets, with the highest marginal rate of 22% applying only to income exceeding S$320,000. This progressive structure ensures that higher earners contribute proportionally more while keeping the overall tax burden manageable for middle and lower-income residents.
 
-**PROGRESSIVE TAX RATE STRUCTURE**
+PROGRESSIVE TAX RATE STRUCTURE:
 
-• First S$20,000: **0%** (tax-free threshold)
-• Next S$10,000 (S$20,001-S$30,000): **2%** = S$200
-• Next S$10,000 (S$30,001-S$40,000): **3.5%** = S$350  
-• Next S$40,000 (S$40,001-S$80,000): **7%** = S$2,800
-• Next S$40,000 (S$80,001-S$120,000): **11.5%** = S$4,600
-• Next S$40,000 (S$120,001-S$160,000): **15%** = S$6,000
-• Next S$40,000 (S$160,001-S$200,000): **18%** = S$7,200
-• Next S$40,000 (S$200,001-S$240,000): **19%** = S$7,600
-• Next S$40,000 (S$240,001-S$280,000): **19.5%** = S$7,800
-• Next S$40,000 (S$280,001-S$320,000): **20%** = S$8,000
-• Above S$320,000: **22%**
+• First S$20,000: 0% (tax-free threshold)
+• Next S$10,000 (S$20,001-S$30,000): 2% = S$200
+• Next S$10,000 (S$30,001-S$40,000): 3.5% = S$350  
+• Next S$40,000 (S$40,001-S$80,000): 7% = S$2,800
+• Next S$40,000 (S$80,001-S$120,000): 11.5% = S$4,600
+• Next S$40,000 (S$120,001-S$160,000): 15% = S$6,000
+• Next S$40,000 (S$160,001-S$200,000): 18% = S$7,200
+• Next S$40,000 (S$200,001-S$240,000): 19% = S$7,600
+• Next S$40,000 (S$240,001-S$280,000): 19.5% = S$7,800
+• Next S$40,000 (S$280,001-S$320,000): 20% = S$8,000
+• Above S$320,000: 22%
 
-**Total tax on first S$320,000 = S$44,550**
+Total tax on first S$320,000 = S$44,550
 
-**KEY POINTS**
-• These rates apply to tax residents (those in Singapore ≥183 days per year)
+KEY POINTS:
+• These rates apply to tax residents (those in Singapore 183 days or more per year)
 • Rates apply to chargeable income (after deductions and reliefs)
 • Singapore has no capital gains tax or inheritance tax
 • Non-residents face different tax treatment (15% flat or progressive, whichever higher)"""
@@ -966,93 +966,93 @@ Singapore operates a progressive tax system for residents, with rates ranging fr
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'tax threshold':
-            answer = """**Income Tax Threshold in Singapore**
+            answer = """Income Tax Threshold in Singapore
 
 Singapore residents effectively start paying income tax once their annual chargeable income exceeds S$20,000. This is because the first S$20,000 of chargeable income is taxed at 0%, providing a tax-free threshold that benefits all resident taxpayers. However, it's important to note that individuals earning above S$22,000 in gross annual income are required to file a tax return, even though they may not owe any tax after applying personal reliefs and deductions.
 
-**TAX-FREE THRESHOLD**
-• First S$20,000 of chargeable income: **0% tax rate**
+TAX-FREE THRESHOLD:
+• First S$20,000 of chargeable income: 0% tax rate
 • This means no tax is payable on the first S$20,000
 • Applies automatically to all tax residents
 • Non-residents do NOT get this tax-free threshold
 
-**FILING REQUIREMENTS**
+FILING REQUIREMENTS:
 • Must file if annual income exceeds S$22,000
 • Even if no tax is payable after reliefs
 • Auto-inclusion scheme may apply for employment income
 • Penalties apply for non-filing even if no tax due
 
-**PRACTICAL EXAMPLES**
+PRACTICAL EXAMPLES:
 • Earning S$20,000: Pay S$0 tax
 • Earning S$25,000: Pay tax only on S$5,000 (at 2% = S$100)
 • Earning S$30,000: Pay tax only on S$10,000 (S$200 total)
 
-**KEY POINTS**
+KEY POINTS:
 • S$20,000 threshold applies to chargeable income (after deductions)
 • With reliefs, actual tax-free income can be much higher
 • For example, with S$15,000 in reliefs, you could earn S$35,000 gross and still pay no tax"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'highest rate':
-            answer = """**Highest Marginal Tax Rate in Singapore**
+            answer = """Highest Marginal Tax Rate in Singapore
 
 The highest marginal tax rate for individual income tax in Singapore is 22% for tax residents, applicable to chargeable income exceeding S$320,000. For non-residents, the situation is more complex: employment income is taxed at either 15% flat rate or progressive rates (whichever is higher), while other income types such as director's fees and professional income are taxed at a flat 24% rate.
 
-**FOR TAX RESIDENTS**
-• Highest marginal rate: **22%**
+FOR TAX RESIDENTS:
+• Highest marginal rate: 22%
 • Applies to income above S$320,000
 • Reached after progressing through 11 tax brackets
 • Total tax on first S$320,000 = S$44,550
-• Effective rate at S$1 million income ≈ 19.4%
+• Effective rate at S$1 million income is approximately 19.4%
 
-**FOR NON-RESIDENTS**
+FOR NON-RESIDENTS:
 • Employment income: 15% or progressive rates (whichever HIGHER)
 • At high incomes, progressive rates (up to 22%) apply
-• Other income: **24% flat rate** (director's fees, consultancy, etc.)
+• Other income: 24% flat rate (director's fees, consultancy, etc.)
 • This 24% rate is actually higher than resident rates
 
-**INTERNATIONAL CONTEXT**
+INTERNATIONAL CONTEXT:
 • Singapore's 22% top rate is very competitive globally
 • Compare: UK (45%), Australia (45%), USA (37% federal + state)
 • No capital gains tax or inheritance tax in Singapore
 • Overall tax burden remains low despite recent increases
 
-**IMPORTANT NOTE**
+IMPORTANT NOTE:
 • Marginal rate = tax on your last dollar earned
-• Effective rate = total tax ÷ total income (always lower)
+• Effective rate = total tax divided by total income (always lower)
 • Even at S$1 million income, effective rate is under 20%"""
             sources = ["singapore_tax_facts.json"]
             
         elif topic == 'non-resident tax':
-            answer = """**Non-Resident Tax Rates in Singapore**
+            answer = """Non-Resident Tax Rates in Singapore
 
 Non-residents in Singapore face different tax treatment than residents, generally resulting in higher tax obligations. Employment income is taxed at either 15% flat rate or progressive resident rates (whichever is higher), while other income types like director's fees and professional income are taxed at a flat 24%. Non-residents cannot claim any personal reliefs or the S$20,000 tax-free threshold that residents enjoy.
 
-**EMPLOYMENT INCOME**
-• Taxed at **15% flat rate OR progressive rates** (whichever produces HIGHER tax)
+EMPLOYMENT INCOME:
+• Taxed at 15% flat rate OR progressive rates (whichever produces HIGHER tax)
 • No S$20,000 tax-free threshold
 • No personal reliefs or deductions allowed
 
-**CALCULATION EXAMPLES**
-• **S$30,000 salary**: 15% = S$4,500 (resident pays only S$200)
-• **S$60,000 salary**: 15% = S$9,000 (resident pays S$1,950)
-• **S$80,000 salary**: 15% = S$12,000 (resident pays S$3,350)
-• **S$500,000 salary**: Progressive rates = S$88,150 (exceeds 15%)
+CALCULATION EXAMPLES:
+• S$30,000 salary: 15% = S$4,500 (resident pays only S$200)
+• S$60,000 salary: 15% = S$9,000 (resident pays S$1,950)
+• S$80,000 salary: 15% = S$12,000 (resident pays S$3,350)
+• S$500,000 salary: Progressive rates = S$88,150 (exceeds 15%)
 
-**OTHER INCOME TYPES**
-• Director's fees: **24%** withholding tax
-• Professional/consultancy fees: **24%**
-• Business income: **24%**
-• Rental income: **24%**
-• Interest income: **15%**
-• Royalties: **10%**
+OTHER INCOME TYPES:
+• Director's fees: 24% withholding tax
+• Professional/consultancy fees: 24%
+• Business income: 24%
+• Rental income: 24%
+• Interest income: 15%
+• Royalties: 10%
 
-**EMPLOYMENT DURATION RULES**
-• **≤60 days**: Generally tax exempt (except directors/entertainers/professionals)
-• **61-182 days**: Non-resident tax rates apply
-• **≥183 days**: Qualify as tax resident for that year
+EMPLOYMENT DURATION RULES:
+• 60 days or less: Generally tax exempt (except directors/entertainers/professionals)
+• 61-182 days: Non-resident tax rates apply
+• 183 days or more: Qualify as tax resident for that year
 
-**KEY DISADVANTAGES**
+KEY DISADVANTAGES:
 • No S$20,000 tax-free threshold
 • No personal reliefs (spouse, child, parent, etc.)
 • No CPF relief or earned income relief
