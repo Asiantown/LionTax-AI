@@ -39,7 +39,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI  # Still using OpenAI client format for Groq
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import FakeEmbeddings  # Lightweight, no dependencies
 
 # Multi-agent system removed - using direct responses for accuracy
 
@@ -66,9 +66,8 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
         all_chunks.extend(chunks)
     
     print(f"  Creating database with {len(all_chunks)} chunks...")
-    # Using sentence-transformers for embeddings (no API needed)
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # Using fake embeddings to avoid heavy dependencies
+    embeddings = FakeEmbeddings(size=384)
     db = Chroma.from_documents(
         documents=all_chunks,
         embedding=embeddings,
@@ -76,9 +75,8 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
     )
 else:
     print("✅ Database found. Loading...")
-    # Using sentence-transformers for embeddings (no API needed)
-    from langchain_community.embeddings import HuggingFaceEmbeddings
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # Using fake embeddings to avoid heavy dependencies
+    embeddings = FakeEmbeddings(size=384)
     db = Chroma(
         persist_directory=db_path,
         embedding_function=embeddings
