@@ -37,8 +37,9 @@ print("Version: Fixed formatting (2024-03-09 15:45)")
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import ChatOpenAI  # Still using OpenAI client format for Groq
 from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # Multi-agent system removed - using direct responses for accuracy
 
@@ -65,7 +66,9 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
         all_chunks.extend(chunks)
     
     print(f"  Creating database with {len(all_chunks)} chunks...")
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    # Using sentence-transformers for embeddings (no API needed)
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     db = Chroma.from_documents(
         documents=all_chunks,
         embedding=embeddings,
@@ -73,7 +76,9 @@ if not os.path.exists(db_path) or len(os.listdir(db_path)) == 0:
     )
 else:
     print("✅ Database found. Loading...")
-    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    # Using sentence-transformers for embeddings (no API needed)
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     db = Chroma(
         persist_directory=db_path,
         embedding_function=embeddings
@@ -90,8 +95,13 @@ except:
     tax_facts = {}
     print("⚠️ Tax facts not found, using RAG only")
 
-# Create QA chain
-llm = ChatOpenAI(temperature=0, model="gpt-4-turbo-preview")
+# Create QA chain - Using Groq's Qwen for Chinese support (FAST!)
+llm = ChatOpenAI(
+    temperature=0,
+    openai_api_base="https://api.groq.com/openai/v1",
+    openai_api_key=os.environ.get("GROQ_API_KEY"),
+    model_name="qwen/qwen3-32b"  # 400 tokens/sec!
+)
 
 def split_multiple_questions(text):
     """Split text into individual questions."""
