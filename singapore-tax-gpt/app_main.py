@@ -25,9 +25,7 @@ import logging
 logging.getLogger('chromadb.telemetry').setLevel(logging.ERROR)
 logging.getLogger('chromadb.telemetry.posthog').setLevel(logging.ERROR)
 
-from qa_working import answer_question
-from src.singapore.tax_calculator import SingaporeTaxCalculator
-from src.apis.stamp_duty_calculator import StampDutyCalculator
+from qa_lite import answer_question  # Using lightweight version for deployment
 
 # Page config
 st.set_page_config(
@@ -356,8 +354,7 @@ st.markdown("""
 
 # Initialize calculators
 if 'tax_calc' not in st.session_state:
-    st.session_state.tax_calc = SingaporeTaxCalculator()
-    st.session_state.stamp_calc = StampDutyCalculator()
+    # Calculators removed - using Groq for all calculations
 
 # Professional sidebar
 with st.sidebar:
