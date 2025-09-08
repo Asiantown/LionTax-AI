@@ -895,8 +895,31 @@ def answer_single_question(question):
         if fact_answer:
             supplemental_info = f"\n\nSupplemental Information (from tax facts database):\n{fact_answer}"
     
+    # Detect language of question
+    is_chinese = any(ord(char) > 0x4e00 and ord(char) < 0x9fff for char in question)
+    
     # Enhanced prompt that uses documents but can add supplemental facts
-    prompt = f"""You are a Singapore tax expert analyzing official tax documents.
+    if is_chinese:
+        # Force Chinese response for Chinese questions
+        prompt = f"""你是新加坡税务专家。必须用中文回答！
+
+搜索到的文档内容：
+{context[:5000]}
+
+用户问题：{question}{supplemental_info}
+
+指示：
+1. 必须用中文回答！即使文档是英文的，也要翻译成中文
+2. 提供直接、清晰的答案
+3. 使用文档和补充信息中的数据
+4. 用3-5个要点说明细节
+5. 简洁但全面
+6. 不要使用markdown格式
+7. 如果文档缺少具体信息但有补充信息，使用补充信息
+
+用中文回答："""
+    else:
+        prompt = f"""You are a Singapore tax expert analyzing official tax documents.
 
 Document Excerpts Searched:
 {context[:5000]}
@@ -904,16 +927,16 @@ Document Excerpts Searched:
 User Question: {question}{supplemental_info}
 
 INSTRUCTIONS:
-1. Provide a direct, clear answer to the question
-2. Use information from BOTH the document excerpts AND supplemental information (if provided)
-3. Start with the main answer (rates, amounts, rules) immediately
-4. Follow with 3-5 bullet points with additional details
-5. Be concise but comprehensive
-6. Do NOT use markdown formatting (no **, no ##)
-7. If documents lack specifics but supplemental info has it, use the supplemental info
-8. Don't mention "documents don't specify" - just provide the best available answer
+1. Answer in ENGLISH
+2. Provide a direct, clear answer to the question
+3. Use information from BOTH the document excerpts AND supplemental information (if provided)
+4. Start with the main answer (rates, amounts, rules) immediately
+5. Follow with 3-5 bullet points with additional details
+6. Be concise but comprehensive
+7. Do NOT use markdown formatting (no **, no ##)
+8. If documents lack specifics but supplemental info has it, use the supplemental info
 
-Answer:"""
+Answer in English:"""
     
     # Get answer from LLM
     response = llm.invoke(prompt)
