@@ -2,11 +2,17 @@
 streamlit==1.29.0
 python-dotenv==1.0.0
 
-# OpenAI and LangChain with compatible versions
-openai>=1.0.0,<2.0.0
+# LangChain with compatible versions (for Groq)
 langchain>=0.0.350,<0.1.1
 langchain-openai>=0.0.5,<0.1.0
 langchain-community>=0.0.10,<0.1.0
+
+# Embeddings (no API needed)
+sentence-transformers>=2.2.0
+torch>=2.0.0
+
+# For Groq API (uses OpenAI format)
+openai>=1.0.0,<2.0.0
 
 # Vector database
 chromadb>=0.4.0,<0.5.0
