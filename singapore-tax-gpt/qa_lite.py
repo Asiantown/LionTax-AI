@@ -66,31 +66,15 @@ def answer_single_question(question):
     # Detect language
     is_chinese = any(ord(char) > 0x4e00 and ord(char) < 0x9fff for char in question)
     
-    # Create prompt based on language
+    # Create prompt based on language - CONCISE like GPT-4
     if is_chinese:
-        prompt = f"""你是新加坡税务专家。请用中文回答。
+        prompt = f"""你是新加坡税务专家。简洁准确地回答，像ChatGPT一样自然对话。
 
-用户问题：{question}
-
-根据你对新加坡税务的了解，提供准确的答案。包括：
-1. 直接回答问题
-2. 提供具体的税率、金额或规则
-3. 添加3-5个相关要点
-4. 如果是2024年的最新信息，请说明
-
-用中文详细回答："""
+{question}"""
     else:
-        prompt = f"""You are a Singapore tax expert. Answer in English.
+        prompt = f"""You are a Singapore tax expert. Answer concisely like ChatGPT - be natural and direct. Keep responses under 50 words unless more detail is essential.
 
-User Question: {question}
-
-Based on your knowledge of Singapore tax laws, provide an accurate answer including:
-1. Direct answer to the question
-2. Specific rates, amounts, or rules
-3. 3-5 relevant bullet points
-4. Note if information is for 2024
-
-Answer in detail:"""
+{question}"""
     
     # Get answer from LLM
     response = llm.invoke(prompt)
