@@ -352,8 +352,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize calculators
-if 'tax_calc' not in st.session_state:
+# Initialize session state
+if 'initialized' not in st.session_state:
+    st.session_state.initialized = True
     # Calculators removed - using Groq for all calculations
 
 # Professional sidebar
