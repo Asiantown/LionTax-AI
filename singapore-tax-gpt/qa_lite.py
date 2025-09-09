@@ -18,29 +18,31 @@ load_dotenv()
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
-print("🇸🇬 Singapore Tax Q&A System - Lite Version")
-print("="*50)
-
 from langchain_openai import ChatOpenAI
 
-# Create LLM - Using Groq's Qwen for Chinese support
-llm = ChatOpenAI(
-    temperature=0,
-    openai_api_base="https://api.groq.com/openai/v1",
-    openai_api_key=os.environ.get("GROQ_API_KEY"),
-    model_name="qwen/qwen3-32b"
-)
+# Global LLM instance (initialized on first use)
+llm = None
+
+def get_llm():
+    """Get or create the LLM instance."""
+    global llm
+    if llm is None:
+        llm = ChatOpenAI(
+            temperature=0,
+            openai_api_base="https://api.groq.com/openai/v1",
+            openai_api_key=os.environ.get("GROQ_API_KEY"),
+            model_name="qwen/qwen3-32b"
+        )
+    return llm
 
 # Load structured tax facts
 try:
     with open('singapore_tax_facts.json', 'r') as f:
         tax_facts = json.load(f)
-        print("✅ Loaded tax facts")
+        pass  # Successfully loaded
 except:
     tax_facts = {}
-    print("⚠️ Tax facts not found")
-
-print("✅ System ready!\n")
+    pass  # No tax facts file
 
 def split_multiple_questions(text):
     """Split text into individual questions."""
@@ -77,7 +79,7 @@ def answer_single_question(question):
 {question}"""
     
     # Get answer from LLM
-    response = llm.invoke(prompt)
+    response = get_llm().invoke(prompt)
     
     # Clean up response
     answer = response.content
