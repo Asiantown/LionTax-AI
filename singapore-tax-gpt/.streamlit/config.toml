@@ -5,11 +5,5 @@ secondaryBackgroundColor = "#1a202c"
 textColor = "#e2e8f0"
 font = "sans serif"
 
-[server]
-headless = true
-enableCORS = false
-enableXsrfProtection = false
-
 [browser]
-serverAddress = "0.0.0.0"
 gatherUsageStats = false
