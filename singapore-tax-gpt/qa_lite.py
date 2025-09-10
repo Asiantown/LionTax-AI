@@ -68,15 +68,33 @@ def answer_single_question(question):
     # Detect language
     is_chinese = any(ord(char) > 0x4e00 and ord(char) < 0x9fff for char in question)
     
-    # Create prompt based on language - CONCISE like GPT-4
+    # Create prompt based on language - ACCURATE and SMART
     if is_chinese:
-        prompt = f"""你是新加坡税务专家。简洁准确地回答，像ChatGPT一样自然对话。
+        prompt = f"""你是新加坡税务专家。请提供准确、具体的答案。包括所有重要的税率、金额和条件。简洁但完整。
 
-{question}"""
+问题：{question}"""
     else:
-        prompt = f"""You are a Singapore tax expert. Answer concisely like ChatGPT - be natural and direct. Keep responses under 50 words unless more detail is essential.
+        prompt = f"""You are an expert Singapore tax advisor. Use these CORRECT 2024/YA2025 tax rates:
 
-{question}"""
+PERSONAL INCOME TAX (Residents):
+First $20,000: 0%
+Next $10,000: 2%
+Next $10,000: 3.5%
+Next $10,000: 7%
+Next $40,000: 11.5%
+Next $40,000: 15%
+Next $40,000: 18%
+Next $40,000: 19%
+Next $40,000: 19.5%
+Next $40,000: 20%
+Next $40,000: 20.5%
+Above $320,000: 22%
+
+Non-residents: 15% flat or progressive rates (whichever higher)
+Corporate tax: 17%
+GST: 9% (from 1 Jan 2024)
+
+Answer this question accurately and concisely: {question}"""
     
     # Get answer from LLM
     response = get_llm().invoke(prompt)
