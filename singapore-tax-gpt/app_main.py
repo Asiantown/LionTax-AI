@@ -29,22 +29,22 @@ from qa_lite import answer_question  # Using lightweight version for deployment
 
 # Page config
 st.set_page_config(
-    page_title="Singapore Tax GPT",
-    page_icon="🏛️",
+    page_title="Singapore Tax Assistant",
+    page_icon="🇸🇬",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Professional Dark Theme CSS
+# Professional Blue Theme CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     
-    /* Global Dark Theme */
+    /* Global Blue Theme */
     .stApp {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #0f1419;
-        color: #e2e8f0;
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        color: #ffffff;
     }
     
     /* Hide Streamlit elements */
@@ -123,17 +123,17 @@ st.markdown("""
         margin-right: 2rem;
     }
     
-    /* Buttons - Professional styling */
+    /* Buttons - Blue theme styling */
     .stButton > button {
-        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        background: rgba(255, 255, 255, 0.1);
         color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
         font-weight: 600;
-        font-size: 0.95rem;
+        font-size: 1rem;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+        backdrop-filter: blur(10px);
         width: 100%;
         margin-bottom: 0.5rem;
     }
@@ -389,10 +389,18 @@ with st.sidebar:
     with col2:
         st.metric("Status", "Online")
 
-# Main interface
-st.title("Singapore Tax GPT")
-st.markdown("*Professional AI tax assistant powered by official IRAS regulations*")
-st.warning("⚠️ **Tax rates current as of December 2024.** Tax regulations change annually. Please verify critical information with [IRAS](https://www.iras.gov.sg) directly.")
+# Main interface - Hero Section
+st.markdown("""
+<div style="text-align: center; padding: 2rem 0;">
+    <h1 style="font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; color: white;">
+        Singapore Tax <span style="color: #fbbf24;">Assistant</span>
+    </h1>
+    <p style="font-size: 1.25rem; color: #cbd5e1; max-width: 800px; margin: 0 auto;">
+        Expert guidance for individuals and businesses on Singapore tax regulations, 
+        compliance requirements, and filing procedures with AI-powered assistance.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 # Quick action pills
 st.markdown("**Popular Topics:**")
@@ -461,93 +469,12 @@ if submit_btn and question:
 elif submit_btn:
     st.warning("Please enter a tax question to get started")
 
-# Professional calculators section
-st.markdown("---")
-st.subheader("Professional Tax Calculators")
-
-tab1, tab2 = st.tabs(["Income Tax Calculator", "Stamp Duty Calculator"])
-
-with tab1:
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        st.markdown("**Calculate Income Tax**")
-        income = st.number_input(
-            "Annual Income (SGD)", 
-            min_value=0, 
-            value=100000, 
-            step=1000,
-            key="income_calc"
-        )
-        
-        is_resident = st.selectbox(
-            "Tax Residency", 
-            ["Singapore Tax Resident", "Non-Resident"],
-            key="residency"
-        )
-        
-        if st.button("Calculate Tax", key="calc_income"):
-            result = st.session_state.tax_calc.calculate_income_tax(
-                income, 
-                is_resident=(is_resident == "Singapore Tax Resident")
-            )
-            st.session_state.tax_result = result
-    
-    with col2:
-        if 'tax_result' in st.session_state:
-            result = st.session_state.tax_result
-            
-            st.metric("Tax Payable", f"${result.tax_amount:,.0f}")
-            st.metric("Effective Rate", f"{result.effective_rate:.2f}%")
-            st.metric("Take Home", f"${income - result.tax_amount:,.0f}")
-
-with tab2:
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        st.markdown("**Calculate Stamp Duty**")
-        price = st.number_input(
-            "Property Price (SGD)", 
-            min_value=0, 
-            value=1000000, 
-            step=10000,
-            key="property_price"
-        )
-        
-        buyer_type = st.selectbox(
-            "Buyer Profile",
-            ["Singapore Citizen", "Permanent Resident", "Foreigner", "Company"],
-            key="buyer_profile"
-        )
-        
-        if st.button("Calculate Stamp Duty", key="calc_stamp"):
-            buyer_map = {
-                "Singapore Citizen": "singapore_citizen",
-                "Permanent Resident": "pr", 
-                "Foreigner": "foreigner",
-                "Company": "entity"
-            }
-            
-            result = st.session_state.stamp_calc.calculate_property_stamp_duty(
-                price, 
-                buyer_map[buyer_type]
-            )
-            st.session_state.stamp_result = result
-    
-    with col2:
-        if 'stamp_result' in st.session_state:
-            result = st.session_state.stamp_result
-            
-            st.metric("Buyer's Stamp Duty", f"${result['buyer_stamp_duty']:,.0f}")
-            st.metric("Additional BSD", f"${result['additional_buyer_stamp_duty']:,.0f}")
-            st.metric("Total Stamp Duty", f"${result['total_stamp_duty']:,.0f}")
-
 # Professional footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; color: #64748b; font-size: 0.9rem;">
-    <strong>Singapore Tax GPT</strong> - Professional AI Tax Assistant<br>
-    Powered by official IRAS regulations and tax law databases<br>
+<div style="text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem; padding: 2rem 0;">
+    <strong>Singapore Tax Assistant</strong> - AI-Powered Tax Guidance<br>
+    Powered by official IRAS regulations and current tax laws<br>
     <em>For official guidance, always consult IRAS or qualified tax professionals</em>
 </div>
 """, unsafe_allow_html=True)
